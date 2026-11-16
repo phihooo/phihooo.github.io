@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ian Pua</title>
+<meta name="description" content="Ian Pua. Computer Science and Applied Mathematics at UC Berkeley.">
+
+<!-- Link preview, shown when the site is shared. Change the address below if the site moves. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ian Pua">
+<meta property="og:description" content="Computer Science and Applied Mathematics at UC Berkeley. Studying LLM reasoning in poker.">
+<meta property="og:url" content="https://phihooo.github.io/">
+<meta property="og:image" content="https://phihooo.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <nav class="nav" aria-label="Main">
+    <a class="wordmark" href="#home" data-route="home">ian pua</a>
+    <ul class="nav-links">
+      <li><a href="#work" data-route="work">Work</a></li>
+      <li><a href="#media" data-route="media">Words &amp; pictures</a></li>
+      <li><a href="#offscreen" data-route="offscreen">Off screen</a></li>
+      <li><a href="#resume" data-route="resume">Résumé</a></li>
+      <li><button type="button" class="mode" id="mode"></button></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- HOME -->
+  <section class="view" data-view="home">
+    <div class="wrap">
+      <div class="card">
+        <div class="screen-col">
+          <div class="screen">
+            <canvas id="leader" aria-hidden="true"></canvas>
+            <div class="screen-html" id="screen-html" hidden></div>
+          </div>
+          <blockquote class="quote" id="quote" hidden></blockquote>
+        </div>
+        <div class="intro">
+          <p class="where" id="where"></p>
+          <h1 class="name">Ian Pua</h1>
+          <p class="hero-line" id="tagline"></p>
+          <p class="contact-row" id="hero-links"></p>
+          <h2 class="h-small rule-top">Right now</h2>
+          <ul class="now" id="now-list"></ul>
+          <p class="path" id="path"></p>
+        </div>
+      </div>
+
+      <section class="home-about" id="sec-about">
+        <h2 class="h-small">About</h2>
+        <div class="about-grid">
+          <div class="prose" id="about-prose"></div>
+          <dl class="facts" id="about-facts"></dl>
+          <figure class="walk">
+            <svg viewBox="0 0 240 210" role="img" aria-label="A stick figure walking, changing from a soldier with a helmet and a radio pack into a student with a backpack and a laptop.">
+              <line class="walk-ground" x1="0" y1="176" x2="240" y2="176"/>
+              <!-- soldier kit: radio pack with antenna, helmet -->
+              <g class="kit kit-soldier">
+                <rect x="92" y="80" width="20" height="38" rx="3"/>
+                <path d="M96 80 V44"/>
+                <circle cx="96" cy="42" r="2" class="solid"/>
+                <path class="solid" d="M103 60 a17 17 0 0 1 34 0 z"/>
+                <path d="M99 60 h42"/>
+              </g>
+              <!-- student kit: small backpack, hair -->
+              <g class="kit kit-student">
+                <rect x="98" y="84" width="14" height="26" rx="5"/>
+                <path d="M110 50 q10 -12 22 -2"/>
+              </g>
+              <!-- the person -->
+              <circle cx="120" cy="62" r="14" class="walk-head"/>
+              <path d="M120 76 V132"/>
+              <g class="limb arm-back"><path d="M120 90 L108 116"/></g>
+              <g class="limb leg-back"><path d="M120 132 L106 174"/></g>
+              <g class="limb leg-front"><path d="M120 132 L134 174"/></g>
+              <g class="limb arm-front">
+                <path d="M120 90 L134 114"/>
+                <g class="kit kit-student"><rect class="paper" x="128" y="108" width="22" height="15" rx="2"/></g>
+              </g>
+            </svg>
+            <figcaption>
+              <span class="cap cap-soldier">Singapore, 2024</span>
+              <span class="cap cap-student">Berkeley, 2026</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <div class="home-index">
+        <h2 class="h-small">On this site</h2>
+        <ul class="index">
+          <li><a href="#work"><span class="index-name"><span class="ico" data-icon="work"></span>Work</span><span class="index-note">Experience and projects</span></a></li>
+          <li><a href="#media"><span class="index-name"><span class="ico" data-icon="film"></span>Words &amp; pictures</span><span class="index-note">What I write, read and watch</span></a></li>
+          <li><a href="#offscreen"><span class="index-name"><span class="ico" data-icon="compass"></span>Off screen</span><span class="index-note">Interests and adventures</span></a></li>
+          <li><a href="#resume"><span class="index-name"><span class="ico" data-icon="article"></span>Résumé</span><span class="index-note">The one-page version</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK: experience + projects -->
+  <section class="view" data-view="work" hidden>
+    <div class="wrap page">
+      <h1 class="page-title slug">Work</h1>
+      <section class="part" id="sec-experience">
+        <h2 class="sub"><span class="ico" data-icon="work"></span>Experience</h2>
+        <div class="pending">
+          <p class="pending-title">Coming soon</p>
+          <p class="pending-note">I'm writing this section up. Until then, my GitHub is the best place to see what I've been doing.</p>
+        </div>
+      </section>
+      <section class="part" id="sec-projects">
+        <h2 class="sub"><span class="ico" data-icon="cube"></span>Projects</h2>
+        <div class="pending">
+          <p class="pending-title">Coming soon</p>
+          <p class="pending-note">Project write-ups are on the way.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- WORDS & PICTURES: writing + media diet -->
+  <section class="view" data-view="media" hidden>
+    <div class="wrap page">
+      <h1 class="page-title slug">Words &amp; pictures</h1>
+      <p class="page-lede">What I write, and the books, films, TV and articles I take in.</p>
+      <section class="part" id="sec-writing">
+        <h2 class="sub"><span class="ico" data-icon="pen"></span>Writing</h2>
+        <ul class="posts" id="writing-list"></ul>
+      </section>
+      <section class="part" id="sec-media">
+        <h2 class="sub"><span class="ico" data-icon="film"></span>Media diet</h2>
+        <div class="chips" id="media-filters" role="group" aria-label="Filter by type"></div>
+        <ul class="shelf" id="media-list"></ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- ONE ESSAY (filled in by site.js) -->
+  <section class="view" data-view="post" hidden>
+    <div class="wrap page">
+      <p class="back"><a href="#writing">Back to Writing</a></p>
+      <article>
+        <p class="post-when" id="post-when"></p>
+        <h1 class="page-title" id="post-title"></h1>
+        <div class="prose essay" id="post-body"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- OFF SCREEN: interests + adventures -->
+  <section class="view" data-view="offscreen" hidden>
+    <div class="wrap page">
+      <h1 class="page-title slug ext">Off screen</h1>
+      <p class="page-lede">What I do away from a screen, and where I've been.</p>
+      <section class="part" id="sec-interests">
+        <h2 class="sub"><span class="ico" data-icon="heart"></span>Interests</h2>
+        <ul class="interests" id="interests-list"></ul>
+      </section>
+      <section class="part" id="sec-adventures">
+        <h2 class="sub"><span class="ico" data-icon="compass"></span>Adventures</h2>
+        <p class="countdown" id="countdown" hidden></p>
+        <dl class="stats" id="adventure-stats"></dl>
+        <div class="map" id="map"></div>
+        <ul class="pins" id="pin-list"></ul>
+        <h3 class="h-small">Log</h3>
+        <ul class="posts" id="adventure-log"></ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- RÉSUMÉ -->
+  <section class="view" data-view="resume" hidden>
+    <div class="wrap page">
+      <h1 class="page-title slug">Résumé</h1>
+      <div class="pending" id="resume-box"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <p class="foot-label">Get in touch</p>
+      <p class="foot-email" id="foot-email"></p>
+    </div>
+    <ul class="foot-links" id="foot-links"></ul>
+  </div>
+</footer>
+
+<script src="js/content.js"></script>
+<script src="js/world.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

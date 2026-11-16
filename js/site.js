@@ -1,0 +1,572 @@
+/* Renders content.js into the page, switches between pages, handles day and
+   night mode, draws the map and runs the countdown leader on the home page. */
+(function () {
+  "use strict";
+
+  // ---------- small helpers ----------
+  var SVG = "http://www.w3.org/2000/svg";
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function svg(tag, attrs) {
+    var n = document.createElementNS(SVG, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+  function byId(id) { return document.getElementById(id); }
+  function setText(id, t) { var n = byId(id); if (n) n.textContent = t || ""; }
+  function fill(id, nodes, emptyText) {
+    var host = byId(id);
+    if (!host) return;
+    host.textContent = "";
+    if (!nodes.length && emptyText) { host.appendChild(el("li", "empty", emptyText)); return; }
+    nodes.forEach(function (n) { host.appendChild(n); });
+  }
+  function link(label, url) {
+    var a = el("a", "", label);
+    a.href = url;
+    if (/^https?:/.test(url)) { a.target = "_blank"; a.rel = "noopener"; }
+    return a;
+  }
+
+  // ---------- line icons ----------
+  var ICONS = {
+    climb: '<path d="M9 3h5a5 5 0 0 1 5 5v6a7 7 0 0 1-7 7 5 5 0 0 1-5-5V5a2 2 0 0 1 2-2z"/><path d="M11 7v9"/><path d="M11 7l4 2"/>',
+    run: '<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V9.5"/><path d="M12 13.5l2.6 1.6"/><path d="M10 3h4"/><path d="M12 3v3.5"/><path d="M17.5 7.500l1.300-1.300"/>',
+    dive: '<path d="M4 8.5h11a2.5 2.5 0 0 1 2.5 2.5v2a2.5 2.5 0 0 1-2.5 2.5h-2.6l-1.900-2-1.900 2H6.500A2.500 2.500 0 0 1 4 13z"/><path d="M20 4v11a4 4 0 0 1-4 4h-3"/>',
+    film: '<rect x="3.5" y="10" width="17" height="10" rx="1.5"/><path d="M3.5 10l15.500-4.200-.900-3.200L2.700 6.800z"/><path d="M7.400 5.500l2 3.400"/><path d="M12 4.300l2 3.400"/>',
+    sport: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17"/><path d="M3.5 12h17"/><path d="M6 6c2.200 1.800 2.200 10.200 0 12"/><path d="M18 6c-2.200 1.800-2.200 10.200 0 12"/>',
+    french: '<path d="M4 5.5h16v11h-8.500L7 20v-3.500H4z"/><path d="M9 12.500c0-2.800 4.500-2.800 4.500-.300H9c0 2.300 3 2.700 4.300 1.300"/><path d="M11 7.800l1.800-1.100"/>',
+    book: '<path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
+    tv: '<rect x="3" y="7.500" width="18" height="12" rx="2"/><path d="M8.500 3.500l3.500 4 3.500-4"/>',
+    article: '<path d="M6 3.5h9l3.500 3.500v13.500H6z"/><path d="M9 11.500h6M9 15h6M9 8h3"/>',
+    work: '<rect x="3.5" y="7.500" width="17" height="12" rx="2"/><path d="M9 7.500v-2A1.500 1.500 0 0 1 10.500 4h3A1.500 1.500 0 0 1 15 5.500v2"/><path d="M3.500 13h17"/>',
+    cube: '<path d="M12 3l8 4.500v9L12 21l-8-4.500v-9z"/><path d="M4 7.500l8 4.500 8-4.500M12 12v9"/>',
+    pen: '<path d="M4 20l1-4.500L16.500 4a2.100 2.100 0 0 1 3 3L8 18.500z"/><path d="M14.500 6l3 3"/>',
+    heart: '<path d="M12 20s-7.500-4.600-7.500-10A4.300 4.300 0 0 1 12 7.300 4.300 4.300 0 0 1 19.500 10c0 5.400-7.500 10-7.500 10z"/>',
+    compass: '<circle cx="12" cy="12" r="8.5"/><path d="M15.500 8.500l-2 5-5 2 2-5z"/>',
+    person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+    pin: '<path d="M12 21s-6.500-6-6.500-11a6.500 6.500 0 0 1 13 0c0 5-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>',
+    home: '<path d="M4 11l8-7 8 7"/><path d="M6.500 9.500V20h11V9.500"/>',
+    cap: '<path d="M2.500 9.500L12 5l9.500 4.500L12 14z"/><path d="M6.500 11.800V16c1.500 1.600 9.500 1.600 11 0v-4.200"/>',
+    group: '<circle cx="9" cy="9" r="3"/><circle cx="16.500" cy="10" r="2.300"/><path d="M3.500 19a5.500 5.500 0 0 1 11 0M15 15.200a4.500 4.500 0 0 1 5.500 3.800"/>',
+    mail: '<rect x="3.500" y="5.500" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/>',
+    globe: '<circle cx="12" cy="12" r="8.500"/><path d="M3.500 12h17M12 3.500c3 3 3 14 0 17M12 3.500c-3 3-3 14 0 17"/>'
+  };
+  function iconSvg(key) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[key] || '<circle cx="12" cy="12" r="8.5"/>') + '</svg>';
+  }
+  function ico(key) { var n = el("span", "ico"); n.innerHTML = iconSvg(key); return n; }
+  document.querySelectorAll("[data-icon]").forEach(function (n) { n.innerHTML = iconSvg(n.getAttribute("data-icon")); });
+
+  var S = window.SITE || {};
+  var adv = S.adventures || {};
+
+  // ---------- home ----------
+  setText("where", S.location);
+  setText("tagline", S.tagline);
+  var hl = byId("hero-links");
+  if (hl) {
+    (S.links || []).forEach(function (l) { hl.appendChild(link(l.label, l.url)); });
+    if (S.email) hl.appendChild(el("span", "", S.email));
+  }
+  var qb = byId("quote");
+  if (qb && S.quote && S.quote.text) {
+    qb.appendChild(el("p", "", "\u201c" + S.quote.text + "\u201d"));
+    if (S.quote.by) qb.appendChild(el("cite", "", S.quote.by));
+    qb.hidden = false;
+  }
+  fill("now-list", (S.now || []).map(function (t) { return el("li", "", t); }));
+  setText("path", (adv.places || []).map(function (p) { return p.name; }).join(" → "));
+
+  // ---------- about ----------
+  fill("about-prose", (S.about || []).map(function (t) { return el("p", "", t); }));
+  var facts = [];
+  (S.facts || []).forEach(function (f) {
+    var row = el("div");
+    var dt = el("dt", "", f.label);
+    if (f.icon) dt.insertBefore(ico(f.icon), dt.firstChild);
+    row.appendChild(dt);
+    row.appendChild(el("dd", "", f.value));
+    facts.push(row);
+  });
+  fill("about-facts", facts);
+  var factsBox = byId("about-facts");
+  if (factsBox && !facts.length) factsBox.hidden = true;
+
+  // ---------- media diet ----------
+  var TYPES = [
+    { key: "all", label: "All" }, { key: "book", label: "Books" }, { key: "film", label: "Films" },
+    { key: "tv", label: "TV" }, { key: "article", label: "Articles" }
+  ];
+  var mediaFilter = "all";
+  function mediaRow(m) {
+    var li = el("li", "media-row");
+    var body = el("div");
+    var title = el("p", "book-title");
+    if (m.url) title.appendChild(link(m.title, m.url)); else title.textContent = m.title;
+    if (m.status === "now") title.appendChild(el("span", "media-status", "in progress"));
+    body.appendChild(title);
+    if (m.by) body.appendChild(el("p", "book-author", m.by));
+    if (m.note) body.appendChild(el("p", "book-note", m.note));
+    li.appendChild(body);
+    li.appendChild(el("p", "media-when", m.when || ""));
+    return li;
+  }
+  function renderMedia() {
+    var all = S.media || [];
+    var rows = [];
+    // one heading per kind, so the kind is not repeated on every row
+    TYPES.slice(1).forEach(function (t) {
+      if (mediaFilter !== "all" && mediaFilter !== t.key) return;
+      var items = all.filter(function (m) { return m.type === t.key; });
+      if (!items.length) return;
+      items.sort(function (a, b) { return (a.status === "now" ? 0 : 1) - (b.status === "now" ? 0 : 1); });
+      var head = el("li", "media-group");
+      head.appendChild(ico(t.key));
+      head.appendChild(el("span", "", t.label));
+      rows.push(head);
+      items.forEach(function (m) { rows.push(mediaRow(m)); });
+    });
+    fill("media-list", rows, "Nothing listed here yet.");
+    var host = byId("media-filters");
+    if (!host) return;
+    host.textContent = "";
+    TYPES.forEach(function (t) {
+      var n = t.key === "all" ? all.length : all.filter(function (m) { return m.type === t.key; }).length;
+      var b = el("button", "", t.label + " " + n);
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(mediaFilter === t.key));
+      b.addEventListener("click", function () { mediaFilter = t.key; renderMedia(); });
+      host.appendChild(b);
+    });
+  }
+  renderMedia();
+
+  // ---------- writing ----------
+  var posts = {};
+  fill("writing-list", (S.writing || []).map(function (p) {
+    var li = el("li");
+    li.appendChild(el("p", "post-when", p.when || ""));
+    var body = el("div");
+    var title = el("p", "post-title");
+    if (p.slug && p.body && p.body.length) {
+      posts[p.slug] = p;
+      title.appendChild(link(p.title, "#post-" + p.slug));
+    } else if (p.url) title.appendChild(link(p.title, p.url));
+    else title.textContent = p.title;
+    body.appendChild(title);
+    if (p.blurb) body.appendChild(el("p", "post-blurb", p.blurb));
+    li.appendChild(body);
+    return li;
+  }), "No posts yet.");
+
+  function renderPost(p) {
+    setText("post-when", p.when);
+    setText("post-title", p.title);
+    var host = byId("post-body");
+    host.textContent = "";
+    (p.body || []).forEach(function (line) {
+      if (line.indexOf("## ") === 0) host.appendChild(el("h2", "", line.slice(3)));
+      else if (line.indexOf("> ") === 0) host.appendChild(el("blockquote", "", line.slice(2)));
+      else host.appendChild(el("p", "", line));
+    });
+  }
+
+  // ---------- interests ----------
+  fill("interests-list", (S.interests || []).map(function (i) {
+    var li = el("li", "interest");
+    var mark = el("div", "interest-mark");
+    if (i.image) {
+      var img = el("img"); img.alt = ""; img.loading = "lazy"; img.src = i.image;
+      img.addEventListener("error", function () { mark.innerHTML = iconSvg(i.icon); });
+      mark.appendChild(img);
+    } else mark.innerHTML = iconSvg(i.icon);
+    li.appendChild(mark);
+    var body = el("div");
+    body.appendChild(el("p", "interest-name", i.name));
+    if (i.note) body.appendChild(el("p", "interest-note", i.note));
+    li.appendChild(body);
+    return li;
+  }));
+  // ---------- adventures ----------
+  var places = adv.places || [];
+  function uniq(key) {
+    var seen = {};
+    places.forEach(function (p) { if (p[key]) seen[p[key]] = 1; });
+    return Object.keys(seen).length;
+  }
+  var stats = [
+    { label: "places pinned", value: String(places.length) },
+    { label: "countries", value: String(uniq("country")) },
+    { label: "continents", value: uniq("continent") + " of 7" }
+  ].map(function (s) {
+    var row = el("div");
+    row.appendChild(el("dt", "", s.label));
+    row.appendChild(el("dd", "", s.value));
+    return row;
+  });
+  fill("adventure-stats", stats);
+
+  var W = window.WORLD;
+  var mapHost = byId("map");
+  if (W && mapHost) {
+    var root = svg("svg", { viewBox: "0 0 " + W.width + " " + W.height, role: "img",
+      "aria-label": "World map with a pin on each place: " + places.map(function (p) { return p.name; }).join(", ") });
+    root.appendChild(svg("path", { "class": "land", d: W.path }));
+    var pts = places.map(function (p) {
+      return { p: p, x: (p.lon + 180) / 360 * W.width, y: (W.top - p.lat) / 360 * W.width };
+    });
+    // dashed legs between consecutive places, taking the shorter way round
+    for (var i = 1; i < pts.length; i++) {
+      var a = pts[i - 1], b = pts[i];
+      if (Math.abs(a.x - b.x) > W.width / 2) {
+        var left = a.x < b.x ? a : b, right = a.x < b.x ? b : a;
+        var span = left.x + (W.width - right.x);
+        var yEdge = right.y + (left.y - right.y) * ((W.width - right.x) / span);
+        root.appendChild(svg("path", { "class": "leg", d: "M" + right.x + " " + right.y + " L" + W.width + " " + yEdge }));
+        root.appendChild(svg("path", { "class": "leg", d: "M0 " + yEdge + " L" + left.x + " " + left.y }));
+      } else {
+        root.appendChild(svg("path", { "class": "leg", d: "M" + a.x + " " + a.y + " L" + b.x + " " + b.y }));
+      }
+    }
+    pts.forEach(function (q) {
+      var g = svg("g", { "class": "pin" + (q.p.here ? " here" : "") });
+      g.appendChild(svg("circle", { cx: q.x, cy: q.y, r: 5 }));
+      var onRight = q.x < W.width - 130;
+      var t = svg("text", { x: q.x + (onRight ? 9 : -9), y: q.y + 4, "text-anchor": onRight ? "start" : "end" });
+      t.textContent = q.p.name;
+      g.appendChild(t);
+      root.appendChild(g);
+    });
+    mapHost.appendChild(root);
+  }
+  fill("pin-list", places.map(function (p) {
+    var li = el("li", p.here ? "here" : "", p.name);
+    if (p.note) li.appendChild(el("span", "", " (" + p.note + ")"));
+    return li;
+  }));
+
+  var next = adv.next || {};
+  var cd = byId("countdown");
+  if (cd && next.where && next.date) {
+    var days = Math.ceil((new Date(next.date + "T00:00:00").getTime() - Date.now()) / 86400000);
+    if (days > 0) {
+      cd.textContent = days + (days === 1 ? " day" : " days") + " until " + next.where;
+      cd.hidden = false;
+    }
+  }
+
+  fill("adventure-log", (adv.log || []).map(function (g) {
+    var li = el("li");
+    li.appendChild(el("p", "post-when", g.when || ""));
+    var body = el("div");
+    body.appendChild(el("p", "post-title", g.what));
+    if (g.where) body.appendChild(el("p", "post-blurb", g.where));
+    li.appendChild(body);
+    return li;
+  }), "Nothing logged yet.");
+
+  // ---------- résumé ----------
+  var rb = byId("resume-box");
+  if (rb) {
+    if (S.resume) {
+      rb.appendChild(el("p", "pending-title", "One page, PDF"));
+      var dl = el("a", "button", "Download résumé");
+      dl.href = S.resume;
+      dl.setAttribute("download", "");
+      rb.appendChild(dl);
+    } else {
+      rb.appendChild(el("p", "pending-title", "Coming soon"));
+      rb.appendChild(el("p", "pending-note", "The PDF isn't up yet. Email me and I'll send it over."));
+    }
+  }
+
+  // ---------- footer ----------
+  var mail = byId("foot-email");
+  if (mail && S.email) {
+    var m = el("a", "", S.email);
+    m.href = "mailto:" + S.email;
+    mail.appendChild(m);
+  }
+  fill("foot-links", (S.links || []).map(function (l) {
+    var li = el("li");
+    li.appendChild(link(l.label, l.url));
+    return li;
+  }));
+
+  // ---------- day and night ----------
+  var html = document.documentElement;
+  var modeBtn = byId("mode");
+  function isNight() {
+    var t = html.getAttribute("data-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  var MOON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a.6.6 0 0 0-.8-.7 9.8 9.8 0 1 0 12.6 12.6.6.6 0 0 0-.7-.8z"/></svg>';
+  var SUN = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>';
+  function labelMode() {
+    if (!modeBtn) return;
+    var night = isNight();
+    modeBtn.innerHTML = night ? SUN : MOON;   // the icon shows the mode you would switch to
+    modeBtn.setAttribute("aria-label", night ? "Switch to day mode" : "Switch to night mode");
+    modeBtn.title = night ? "Day mode" : "Night mode";
+  }
+  if (modeBtn) {
+    modeBtn.addEventListener("click", function () {
+      var to = isNight() ? "light" : "dark";
+      html.setAttribute("data-theme", to);
+      try { localStorage.setItem("mode", to); } catch (e) {}
+      labelMode();
+    });
+  }
+  try {
+    var savedMode = localStorage.getItem("mode");
+    if (savedMode === "light" || savedMode === "dark") html.setAttribute("data-theme", savedMode);
+  } catch (e) {}
+  labelMode();
+
+  // ---------- page switching ----------
+  var views = Array.prototype.slice.call(document.querySelectorAll("[data-view]"));
+  var names = views.map(function (v) { return v.getAttribute("data-view"); });
+  var onHome = true;
+
+  // old page names now live as sections inside a combined page
+  var ALIAS = {
+    about: ["home", "sec-about"],
+    experience: ["work", "sec-experience"], projects: ["work", "sec-projects"],
+    writing: ["media", "sec-writing"], interests: ["offscreen", "sec-interests"],
+    adventures: ["offscreen", "sec-adventures"]
+  };
+  function show() {
+    var want = (location.hash || "").replace("#", "");
+    var navName = want, anchor = null;
+    if (ALIAS[want]) { anchor = ALIAS[want][1]; want = navName = ALIAS[want][0]; }
+    if (want.indexOf("post-") === 0 && posts[want.slice(5)]) {
+      renderPost(posts[want.slice(5)]);
+      want = "post"; navName = "media";
+    } else if (want === "post" || names.indexOf(want) === -1) {
+      want = "home"; navName = "home";
+    }
+    onHome = want === "home";
+    views.forEach(function (v) { v.hidden = v.getAttribute("data-view") !== want; });
+    document.querySelectorAll("[data-route]").forEach(function (a) {
+      if (a.getAttribute("data-route") === navName && !onHome) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    var target = anchor && byId(anchor);
+    if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
+    if (onHome) startLeader(); else stopLeader();
+  }
+  window.addEventListener("hashchange", show);
+
+  // ---------- the home page screen ----------
+  var canvas = byId("leader");
+  var ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
+  var overlay = byId("screen-html");
+  var raf = 0, typer = 0, ticker = 0;
+  var still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var FACE = "'Courier Prime', 'Courier New', monospace";
+
+  // the time right now in another time zone
+  function zoneTime(tz) {
+    var out = { h: 0, m: 0, s: 0 };
+    try {
+      new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })
+        .formatToParts(new Date()).forEach(function (p) {
+          if (p.type === "hour") out.h = Number(p.value) % 24;
+          if (p.type === "minute") out.m = Number(p.value);
+          if (p.type === "second") out.s = Number(p.value);
+        });
+    } catch (e) { var d = new Date(); out = { h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() }; }
+    return out;
+  }
+  function two(n) { return (n < 10 ? "0" : "") + n; }
+  function timeOfDay(h) { return h < 5 ? "NIGHT" : h < 7 ? "DAWN" : h < 17 ? "DAY" : h < 19 ? "DUSK" : "NIGHT"; }
+  function sceneHeading() {
+    var t = zoneTime("America/Los_Angeles");
+    return { text: "INT. BERKELEY – " + timeOfDay(t.h), clock: two(t.h) + ":" + two(t.m) + " in Berkeley" };
+  }
+
+  function prep() {
+    var r0 = canvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cw = Math.round(r0.width * dpr), ch = Math.round(r0.height * dpr);
+    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, r0.width, r0.height);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    return r0;
+  }
+
+  // 1. Countdown leader
+  function drawLeader(t) {
+    var b = prep(), w = b.width, h = b.height;
+    var cx = w / 2, cy = h / 2, r = h * 0.32;
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
+    var frac = (t % 1000) / 1000;   // the wedge sweeps once per number
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r * 1.9, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(255,255,255,0.10)";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(255,255,255,0.8)";
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r * 0.8, 0, Math.PI * 2); ctx.stroke();
+    var n = 8 - (Math.floor(t / 1000) % 7);   // 8 down to 2, then loops
+    ctx.font = "700 " + Math.round(r * 1.1) + "px " + FACE;
+    ctx.fillStyle = "#f2f2f2";
+    ctx.fillText(String(n), cx, cy + r * 0.05);
+  }
+
+  // 2. Two clocks
+  function drawClocks() {
+    var b = prep(), w = b.width, h = b.height;
+    var r = Math.min(w * 0.19, h * 0.27), cy = h * 0.42;
+    [["BERKELEY", "America/Los_Angeles", w * 0.27], ["SINGAPORE", "Asia/Singapore", w * 0.73]].forEach(function (c) {
+      var t = zoneTime(c[1]), cx = c[2];
+      ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 1.2;
+      for (var k = 0; k < 12; k++) {
+        var a = k * Math.PI / 6, inner = k % 3 === 0 ? 0.8 : 0.9;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.sin(a) * r * inner, cy - Math.cos(a) * r * inner);
+        ctx.lineTo(cx + Math.sin(a) * r * 0.97, cy - Math.cos(a) * r * 0.97);
+        ctx.stroke();
+      }
+      function hand(turn, len, width, colour) {
+        var a2 = turn * Math.PI * 2;
+        ctx.strokeStyle = colour; ctx.lineWidth = width; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.sin(a2) * r * len, cy - Math.cos(a2) * r * len); ctx.stroke();
+      }
+      hand(((t.h % 12) + t.m / 60) / 12, 0.5, 3, "#f2f2f2");
+      hand((t.m + t.s / 60) / 60, 0.74, 2, "#f2f2f2");
+      hand(t.s / 60, 0.8, 1, "#ff8073");
+      ctx.fillStyle = "#f2f2f2";
+      ctx.font = "700 " + Math.round(r * 0.3) + "px " + FACE;
+      ctx.fillText(two(t.h) + ":" + two(t.m), cx, cy + r + r * 0.42);
+      ctx.fillStyle = "#b9b7b0";
+      ctx.font = Math.round(Math.max(10, r * 0.2)) + "px " + FACE;
+      ctx.fillText(c[0], cx, cy + r + r * 0.78);
+    });
+  }
+
+  // 3. Live scene heading
+  function showHeading() {
+    var box = el("div", "sc-heading"), line = el("b"), clock = el("span");
+    box.appendChild(line); box.appendChild(clock);
+    overlay.appendChild(box);
+    function tick() { var s = sceneHeading(); line.textContent = s.text; clock.textContent = s.clock; }
+    tick();
+    ticker = window.setInterval(tick, 15000);
+  }
+
+  // 4. Opening scene that types itself
+  function showFadeIn() {
+    var box = el("div", "sc-fade");
+    var page = el("div", "sc-titlepage");
+    var lines = [el("b", "sc-title"), el("span"), el("span"), el("b"), el("b"), el("p")];
+    lines.slice(0, 3).forEach(function (n) { page.appendChild(n); });
+    box.appendChild(page);
+    lines.slice(3).forEach(function (n) { box.appendChild(n); });
+    var pool = [].concat(S.opening || []);
+    var pickAt = Math.floor(Math.random() * pool.length);
+    try {   // step through the lines in order, one per visit
+      pickAt = ((Number(localStorage.getItem("opening")) || 0) + (openingCounted ? 0 : 1)) % (pool.length || 1);
+      localStorage.setItem("opening", String(pickAt));
+    } catch (e) {}
+    openingCounted = true;
+    var text = [S.title || "", "by", "Ian Pua", "FADE IN:", sceneHeading().text, pool[pickAt] || ""];
+    var cursor = el("span", "cursor");
+    overlay.appendChild(box);
+    if (still) { lines.forEach(function (n, i) { n.textContent = text[i]; }); return; }
+    var li = 0, ci = 0;
+    function step() {
+      if (li >= lines.length) { lines[lines.length - 1].appendChild(cursor); return; }
+      ci++;
+      lines[li].textContent = text[li].slice(0, ci);
+      lines[li].appendChild(cursor);
+      var pause = 36;
+      if (ci >= text[li].length) { li++; ci = 0; pause = li === 3 ? 900 : 420; }
+      typer = window.setTimeout(step, pause);
+    }
+    typer = window.setTimeout(step, 400);
+  }
+
+  // 5. Clapperboard slate
+  function showSlate() {
+    var take = 1;
+    try {
+      take = (Number(localStorage.getItem("take")) || 0) + (slateCounted ? 0 : 1);
+      localStorage.setItem("take", String(take));
+    } catch (e) {}
+    slateCounted = true;
+    var d = new Date();
+    var MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    var box = el("div", "sc-slate");
+    box.appendChild(el("div", "sticks"));
+    var dl = el("dl");
+    [["PRODUCTION", "Ian Pua"], ["SCENE", "Home"], ["TAKE", String(take)],
+     ["DATE", two(d.getDate()) + " " + MONTHS[d.getMonth()] + " " + d.getFullYear()]].forEach(function (f) {
+      var cell = el("div");
+      cell.appendChild(el("dt", "", f[0]));
+      cell.appendChild(el("dd", "", f[1]));
+      dl.appendChild(cell);
+    });
+    box.appendChild(dl);
+    overlay.appendChild(box);
+  }
+  var slateCounted = false, openingCounted = false;
+
+  var SCREENS = [
+    { key: "heading", name: "Live scene heading" },
+    { key: "fadein", name: "Opening scene" },
+    { key: "slate", name: "Clapperboard" },
+    { key: "clocks", name: "Two clocks" },
+    { key: "leader", name: "Countdown only" }
+  ];
+  var screenIndex = 0;
+
+  function stopScreen() {
+    if (raf) { window.cancelAnimationFrame(raf); raf = 0; }
+    if (typer) { window.clearTimeout(typer); typer = 0; }
+    if (ticker) { window.clearInterval(ticker); ticker = 0; }
+  }
+  function startScreen() {
+    stopScreen();
+    if (!ctx || !overlay) return;
+    var key = SCREENS[screenIndex].key;
+    overlay.textContent = "";
+    overlay.hidden = key === "leader" || key === "clocks";
+    prep();
+    if (key === "leader") {
+      if (still) drawLeader(250);
+      else raf = window.requestAnimationFrame(function loop(t) { drawLeader(t); raf = window.requestAnimationFrame(loop); });
+    } else if (key === "clocks") {
+      drawClocks();
+      ticker = window.setInterval(drawClocks, still ? 15000 : 1000);
+    } else if (key === "heading") showHeading();
+    else if (key === "fadein") showFadeIn();
+    else showSlate();
+  }
+  function startLeader() { startScreen(); }   // called when the home page is shown
+  function stopLeader() { stopScreen(); }
+  window.addEventListener("resize", function () {
+    if (!onHome || !ctx) return;
+    var key = SCREENS[screenIndex].key;
+    if (key === "clocks") drawClocks();
+    if (key === "leader" && still) drawLeader(250);
+  });
+
+  SCREENS.forEach(function (sc, i) { if (sc.key === (S.screen || "fadein")) screenIndex = i; });
+
+  show();
+})();
