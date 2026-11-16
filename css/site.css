@@ -428,3 +428,7 @@ button { font: inherit; }
   @keyframes rise { from { transform: translateY(4px); } to { transform: translateY(-2px); } }
   .media-row:hover .msticker svg, .interest:hover .interest-mark { animation-play-state: paused; }
 }
+
+/* a small drawing attached to a "Right now" line */
+.now-sticker { display: inline-block; width: 46px; vertical-align: middle; margin: 2px 0 -22px 8px; width: 42px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.18)); }
+@media (prefers-reduced-motion: no-preference) { .now-sticker { animation: sway-cards 3.2s ease-in-out infinite alternate; transform-origin: 50% 90%; } }

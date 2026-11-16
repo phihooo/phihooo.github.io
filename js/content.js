@@ -22,12 +22,13 @@ window.SITE = {
   location: "Berkeley, California / 37.87\u00b0 N",
   tagline: "Curious about neural networks, and about where human learning meets machine learning.",
 
-  // Short lines on the home page under "Right now"
+  // Short lines on the home page under "Right now".
+  // A line can carry a small drawing: { text: "...", sticker: "cards" }
   now: [
     "At UC Berkeley, studying Computer Science and Applied Mathematics.",
-    "Studying LLM reasoning in poker.",
+    { text: "Studying LLM reasoning in poker.", sticker: "cards" },
     "Machine Learning Engineer at the Student Association for Applied Statistics.",
-    "Tearing fingers at Mosaic."
+    "Tearing fingers at bouldering."
   ],
 
   // The home page screen types out a screenplay title page, then a scene.
@@ -103,7 +104,7 @@ window.SITE = {
   // icon is one of "climb", "run", "dive", "film", "sport", "french".
   // To use a picture instead (a logo or your own photo), add image: "img/file.png".
   interests: [
-    { icon: "climb", name: "Tearing fingers at Mosaic", note: "Climbing. Aiming for two sessions a week." },
+    { icon: "climb", name: "Tearing fingers at bouldering", note: "Climbing. Aiming for two sessions a week." },
     { icon: "run", name: "Running",    note: "Finished a marathon after about five months of training." },
     { icon: "dive", name: "Diving",     note: "Certified rescue diver." },
     { icon: "film", name: "Film and TV", note: "Big-format spectacle and quiet, intimate films both. The running list is under Words & pictures." },

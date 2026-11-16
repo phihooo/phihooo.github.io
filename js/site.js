@@ -116,7 +116,17 @@
     if (S.quote.by) qb.appendChild(el("cite", "", S.quote.by));
     qb.hidden = false;
   }
-  fill("now-list", (S.now || []).map(function (t) { return el("li", "", t); }));
+  fill("now-list", (S.now || []).map(function (t) {
+    if (typeof t === "string") return el("li", "", t);
+    var li = el("li", "", t.text);
+    if (t.sticker) {
+      var st = el("span", "sticker now-sticker");
+      st.setAttribute("data-sticker", t.sticker);
+      st.setAttribute("aria-hidden", "true");
+      li.appendChild(st);
+    }
+    return li;
+  }));
   setText("path", (adv.places || []).map(function (p) { return p.name; }).join(" → "));
 
   // ---------- about ----------
@@ -615,5 +625,6 @@
 
   SCREENS.forEach(function (sc, i) { if (sc.key === (S.screen || "fadein")) screenIndex = i; });
 
+  document.querySelectorAll("[data-sticker]").forEach(function (n) { if (!n.firstChild) n.innerHTML = STICKERS[n.getAttribute("data-sticker")] || ""; });
   show();
 })();
