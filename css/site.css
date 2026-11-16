@@ -267,29 +267,42 @@ button { font: inherit; }
 .home-index { padding-top: 56px; }
 .about-grid.solo { grid-template-columns: 1fr; }
 
-/* the walking figure in About: soldier turning into student */
+/* the walking figure in About: soldier in green turning into a student in blue and gold */
+.walk { --army: #4f6f3a; --army-dark: #3a5429; --cal: #003262; --gold: #fdb515; }
+:root[data-theme="dark"] .walk { --army: #8fb574; --army-dark: #6f9457; --cal: #6fa0e8; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .walk { --army: #8fb574; --army-dark: #6f9457; --cal: #6fa0e8; } }
 .home-about .about-grid { grid-template-columns: 1.6fr 1fr; align-items: center; }
 .walk { margin: 0; justify-self: center; width: 100%; max-width: 240px; }
 .walk svg { display: block; width: 100%; height: auto; overflow: visible; }
-.walk svg * { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-.walk .solid { fill: var(--ink); }
-.walk .walk-head, .walk .paper { fill: var(--paper); }
-.walk .kit-soldier rect, .walk .kit-student rect { fill: var(--shelf); }
+.walk svg * { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.walk .solid, .walk .face { fill: var(--ink); stroke: none; }
+.walk .smile { stroke-width: 1.8; }
+.walk .walk-head { fill: var(--paper); }
+.walk .paper { fill: #d9d9d4; stroke: var(--ink); }
+.walk .cloth { stroke: var(--army); stroke-width: 5; animation: tone 4.5s ease-in-out infinite; }
+.walk .torso { stroke-width: 15; }
+.walk .helmet { fill: var(--army-dark); stroke: var(--army-dark); }
+.walk .helmet-brim { stroke: var(--army-dark); stroke-width: 3.5; }
+.walk .pack-army { fill: var(--army-dark); stroke: var(--army-dark); }
+.walk .pack-cal { fill: var(--gold); stroke: var(--gold); }
+.walk .hair { stroke-width: 4; }
 .walk .walk-ground { stroke: var(--line); stroke-dasharray: 10 12; animation: ground 1.1s linear infinite; }
 .walk .limb { transform-box: view-box; animation: swing 1.1s ease-in-out infinite alternate; }
 .walk .arm-front, .walk .arm-back { transform-origin: 120px 90px; }
 .walk .leg-front, .walk .leg-back { transform-origin: 120px 132px; }
 .walk .arm-back, .walk .leg-front { animation-direction: alternate-reverse; }
-.walk .kit-soldier, .walk .cap-soldier { animation: kit-a 9s ease-in-out infinite; }
-.walk .kit-student, .walk .cap-student { animation: kit-b 9s ease-in-out infinite; }
+.walk .kit-soldier, .walk .cap-soldier { animation: kit-a 4.5s ease-in-out infinite; }
+.walk .kit-student, .walk .cap-student { animation: kit-b 4.5s ease-in-out infinite; }
 .walk figcaption { position: relative; height: 1.6em; text-align: center; font-size: 13px; color: var(--mist); }
 .walk .cap { position: absolute; left: 0; right: 0; }
 @keyframes swing { from { transform: rotate(-17deg); } to { transform: rotate(17deg); } }
 @keyframes ground { to { stroke-dashoffset: 22; } }
-@keyframes kit-a { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }
-@keyframes kit-b { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes kit-a { 0%, 42% { opacity: 1; } 50%, 92% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes kit-b { 0%, 42% { opacity: 0; } 50%, 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes tone { 0%, 42% { stroke: var(--army); } 50%, 92% { stroke: var(--cal); } 100% { stroke: var(--army); } }
 @media (prefers-reduced-motion: reduce) {
-  .walk .limb, .walk .walk-ground, .walk .kit, .walk .cap { animation: none; }
+  .walk .limb, .walk .walk-ground, .walk .kit, .walk .cap, .walk .cloth { animation: none; }
   .walk .kit-soldier, .walk .cap-soldier { opacity: 0; }
+  .walk .cloth { stroke: var(--cal); }
 }
 @media (max-width: 820px) { .home-about .about-grid { grid-template-columns: 1fr; } }
