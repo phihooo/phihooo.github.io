@@ -1,117 +1,100 @@
-/* Builds six margin options (round two) and a chooser to switch them on and off. */
+/* Four ways to show your photos, with a chooser to switch between them. */
 (function () {
   "use strict";
-  var NS = "http://www.w3.org/2000/svg";
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function side(cls, which) { var d = el("div", "mg " + cls + " " + which); d.setAttribute("aria-hidden", "true"); document.body.appendChild(d); return d; }
-  var art = window.__ART || { draw: function () { return ""; }, stickers: {}, keys: [] };
   var body = document.body;
-
-  // A. stickers floating in both margins
-  (function () {
-    var L = side("mg-scatter", "l"), R = side("mg-scatter", "r");
-    var items = [
-      [L, "S:cards", 16, 92, -8, 0.10], [L, "M:fox", 40, 76, 6, 0.16], [L, "S:popcorn", 62, 80, -5, 0.07], [L, "M:planet", 84, 72, 9, 0.13],
-      [R, "S:ticket", 14, 128, 7, 0.14], [R, "S:boulder", 36, 96, -7, 0.08], [R, "M:camera", 58, 76, 5, 0.17], [R, "M:atom", 79, 78, -9, 0.11]
-    ];
-    items.forEach(function (it) {
-      var wrap = el("div", "sc"), inner = el("span");
-      var kind = it[1].split(":");
-      inner.innerHTML = kind[0] === "S" ? (art.stickers[kind[1]] || "") : art.draw(kind[1]);
-      wrap.style.top = it[2] + "%"; wrap.style.width = it[3] + "px";
-      wrap.style.setProperty("--k", it[5]); inner.style.setProperty("--r", it[4] + "deg");
-      inner.style.animationDelay = (it[2] % 7) / 4 + "s";
-      wrap.appendChild(inner); it[0].appendChild(wrap);
-    });
-  })();
-
-  // B. footprints walking down the left margin as you scroll
-  var prints = [];
-  (function () {
-    var L = side("mg-steps", "l");
-    var svg = document.createElementNS(NS, "svg");
-    var N = 16, H = 1000;
-    svg.setAttribute("viewBox", "0 0 110 " + H);
-    svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
-    var html = '<g transform="translate(30 6) scale(1.1)"><path d="M18 40 a22 22 0 0 1 44 0 z" fill="#3a5429"/><path d="M12 40 h56" stroke="#3a5429" stroke-width="5" stroke-linecap="round"/><path d="M26 32 V0" stroke="#171717" stroke-width="2.200" stroke-linecap="round"/></g>';
-    for (var i = 0; i < N; i++) {
-      var t = i / (N - 1), y = 90 + t * (H - 230), x = 55 + (i % 2 ? 13 : -13) + Math.sin(t * 6) * 10;
-      var mix = Math.round(100 * (1 - t));
-      var shape = t < 0.5
-        ? '<rect x="-7" y="-13" width="14" height="15" rx="4"/><rect x="-6" y="5" width="12" height="8" rx="2.500"/>'
-        : '<ellipse cx="0" cy="-5" rx="6.500" ry="9"/><ellipse cx="0" cy="9" rx="5" ry="4.600"/>';
-      html += '<g class="fp" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (180 + (i % 2 ? -10 : 10)) + ')" style="fill:color-mix(in srgb, #4f6f3a ' + mix + '%, #003262)">' + shape + '</g>';
-    }
-    html += '<g transform="translate(34 ' + (H - 118) + ')"><path d="M21 0 L14 24 H28 Z" fill="#fdb515"/><rect x="11" y="24" width="20" height="13" rx="1" fill="#003262"/><rect x="13" y="37" width="16" height="66" fill="#003262"/><circle cx="21" cy="50" r="4" fill="#fdb515"/><path d="M3 103 h36" stroke="#003262" stroke-width="4" stroke-linecap="round"/></g>';
-    svg.innerHTML = html;
-    L.appendChild(svg);
-    prints = Array.prototype.slice.call(svg.querySelectorAll(".fp"));
-  })();
-
-  // C. taped polaroids (drawings stand in for your own photos)
-  (function () {
-    var L = side("mg-polaroids", "l"), R = side("mg-polaroids", "r");
-    [[L, 24, -6, "S:boulder", "the wall", 0.05], [L, 64, 5, "M:jelly", "underwater", 0.12],
-     [R, 16, 6, "M:dunes", "somewhere far", 0.10], [R, 54, -5, "M:sunrise", "5am, again", 0.06]].forEach(function (p) {
-      var wrap = el("div", "pol"), card = el("div"), shot = el("div", "shot");
-      var kind = p[3].split(":");
-      shot.innerHTML = kind[0] === "S" ? (art.stickers[kind[1]] || "") : art.draw(kind[1]);
-      card.appendChild(shot); card.appendChild(el("p", "", p[4]));
-      card.style.setProperty("--r", p[2] + "deg");
-      wrap.style.top = p[1] + "%"; wrap.style.setProperty("--k", p[5]);
-      wrap.appendChild(card); p[0].appendChild(wrap);
-    });
-  })();
-
-  // D. marquee lights
-  ["l", "r"].forEach(function (w) {
-    var col = el("div", "bulbs");
-    for (var i = 0; i < 22; i++) { var b = el("i"); b.style.setProperty("--i", w === "l" ? i : 21 - i); col.appendChild(b); }
-    side("mg-marquee", w).appendChild(col);
-  });
-
-  // E. theatre curtains
-  ["l", "r"].forEach(function (w) { side("mg-curtains", w).appendChild(el("div", "drape")); });
-
-  // F. climbing rope: the carabiner slides down as you scroll
-  (function () {
-    var R = side("mg-rope", "r");
-    R.appendChild(el("div", "rope")); R.appendChild(el("div", "bolt"));
-    [["#b3261e", 22, -46], ["#fdb515", 41, 22], ["#2f6b3a", 60, -50], ["#ff8a3d", 78, 26]].forEach(function (h) {
-      var d = el("div", "hold"); d.style.background = h[0]; d.style.top = h[1] + "%"; d.style.left = "calc(50% + " + h[2] + "px)"; R.appendChild(d);
-    });
-    var biner = el("div", "biner");
-    biner.innerHTML = '<svg viewBox="0 0 60 84"><path d="M14 8 H34 a18 18 0 0 1 18 18 V52 a24 24 0 0 1 -24 24 a18 18 0 0 1 -18 -18 V12 a4 4 0 0 1 4 -4 Z" fill="none" stroke="#b3261e" stroke-width="7" stroke-linejoin="round"/><path d="M19 18 V58" stroke="#8a8f98" stroke-width="5" stroke-linecap="round"/></svg>';
-    R.appendChild(biner);
-  })();
-
-  // scroll drives the parallax, the footprints and the carabiner
-  function onScroll() {
-    var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    var p = Math.min(1, Math.max(0, window.scrollY / max));
-    body.style.setProperty("--sy", String(Math.round(window.scrollY)));
-    body.style.setProperty("--p", p.toFixed(4));
-    var lit = Math.round(p * prints.length);
-    prints.forEach(function (n, i) { n.classList.toggle("on", i < Math.max(1, lit)); });
+  // captions are placeholders: change them to your own words
+  var PHOTOS = [
+    { src: "img/p-sunset.jpg", cap: "sun going down on the bay" },
+    { src: "img/p-wall.jpg", cap: "the wall" },
+    { src: "img/p-stadium.jpg", cap: "game day sky" },
+    { src: "img/p-pole.jpg", cap: "found on a pole in the fog" },
+    { src: "img/p-koi.jpg", cap: "koi" },
+    { src: "img/p-boats.jpg", cap: "small boats, big wind" }
+  ];
+  function frame(p, r) {
+    var f = el("div", "pframe"), img = el("img");
+    img.src = p.src; img.alt = p.cap; img.loading = "lazy";
+    f.appendChild(img); f.appendChild(el("p", "", p.cap));
+    if (r != null) f.style.setProperty("--r", r + "deg");
+    return f;
   }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  window.addEventListener("hashchange", function () { setTimeout(onScroll, 60); });
-  onScroll();
+  function section(cls, title) {
+    var s = el("section", cls);
+    s.appendChild(el("h2", "h-small", title));
+    var anchor = document.querySelector(".home-index");
+    anchor.parentNode.insertBefore(s, anchor);
+    return s;
+  }
 
-  // the chooser
-  var OPTS = [["m-scatter", "A Stickers"], ["m-steps", "B Footprints"], ["m-polaroids", "C Polaroids"], ["m-marquee", "D Marquee lights"], ["m-curtains", "E Curtains"], ["m-rope", "F Climbing rope"]];
+  // 1. polaroids in the side margins
+  var L = el("div", "mg l"), R = el("div", "mg r");
+  [L, R].forEach(function (d) { d.setAttribute("aria-hidden", "true"); body.appendChild(d); });
+  [[L, 0, 14, -6, 0.05], [L, 1, 44, 5, 0.11], [L, 2, 74, -4, 0.07], [R, 3, 12, 6, 0.09], [R, 4, 42, -5, 0.05], [R, 5, 72, 4, 0.12]].forEach(function (p) {
+    var wrap = el("div", "pol");
+    wrap.style.top = p[2] + "%"; wrap.style.setProperty("--k", p[4]);
+    var f = frame(PHOTOS[p[1]], p[3]); f.style.animationDelay = (p[1] * 0.7) + "s";
+    wrap.appendChild(f); p[0].appendChild(wrap);
+  });
+  window.addEventListener("scroll", function () { body.style.setProperty("--sy", String(Math.round(window.scrollY))); }, { passive: true });
+
+  // 2. photo wall
+  var wall = section("wall", "Lately");
+  var grid = el("div", "wall-grid");
+  PHOTOS.forEach(function (p, i) { grid.appendChild(frame(p, [-5, 4, -3, 6, -4, 3][i])); });
+  wall.appendChild(grid);
+
+  // 3. film strip
+  var reelSec = section("reel-sec", "Lately");
+  var reel = el("div", "reel"), track = el("div", "reel-track");
+  PHOTOS.concat(PHOTOS).forEach(function (p) {
+    var fig = el("figure"), img = el("img"); img.src = p.src; img.alt = p.cap;
+    fig.appendChild(img); fig.appendChild(el("figcaption", "", p.cap)); track.appendChild(fig);
+  });
+  reel.appendChild(track); reelSec.appendChild(reel);
+
+  // 4. a pile you flick through
+  var pileSec = section("pile-sec", "Lately");
+  var row = el("div", "pile-row"), pile = el("div", "pile"), side = el("div");
+  var hint = el("p", "pile-hint", "← tap the pile"), count = el("p", "pile-count");
+  side.appendChild(hint); side.appendChild(count);
+  var order = PHOTOS.map(function (_, i) { return i; });
+  var cards = PHOTOS.map(function (p) { var f = frame(p, 0); pile.appendChild(f); return f; });
+  var TILT = [-7, 5, -3, 8, -5, 3];
+  function lay() {
+    order.forEach(function (idx, pos) {
+      var c = cards[idx];
+      c.style.zIndex = String(order.length - pos);
+      c.style.transform = "translate(" + pos * 5 + "px, " + pos * 4 + "px) rotate(" + (pos === 0 ? -2 : TILT[idx]) + "deg)";
+      c.style.opacity = pos > 3 ? "0" : "1";
+    });
+    count.textContent = (PHOTOS.length - order.indexOf(order[0]) ) && ("Photo " + (order[0] + 1) + " of " + PHOTOS.length);
+  }
+  pile.addEventListener("click", function () {
+    var top = cards[order[0]];
+    top.style.transform = "translate(280px, -30px) rotate(24deg)";   // flick the top one away
+    window.setTimeout(function () { order.push(order.shift()); lay(); }, 260);
+  });
+  pile.setAttribute("role", "button"); pile.setAttribute("tabindex", "0"); pile.setAttribute("aria-label", "Next photo");
+  pile.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pile.click(); } });
+  row.appendChild(pile); row.appendChild(side); pileSec.appendChild(row);
+  lay();
+
+  // the chooser: one at a time
+  var OPTS = [["m-wall", "1 Photo wall"], ["m-pile", "2 Pile to flick through"], ["m-reel", "3 Film strip"], ["m-sides", "4 In the margins"]];
   var bar = el("div", "chooser");
-  bar.appendChild(el("b", "", "Margins:"));
-  var on = {};
-  try { on = JSON.parse(localStorage.getItem("margins2") || "{}"); } catch (e) {}
-  if (!Object.keys(on).length) on = { "m-scatter": true };
+  bar.appendChild(el("b", "", "Photos:"));
+  var current = "m-wall";
+  try { current = localStorage.getItem("photos") || current; } catch (e) {}
+  var btns = [];
+  function paint() {
+    OPTS.forEach(function (o, i) { body.classList.toggle(o[0], o[0] === current); btns[i].setAttribute("aria-pressed", String(o[0] === current)); });
+  }
   OPTS.forEach(function (o) {
     var b = el("button", "", o[1]); b.type = "button";
-    function paint() { b.setAttribute("aria-pressed", String(!!on[o[0]])); body.classList.toggle(o[0], !!on[o[0]]); }
-    b.addEventListener("click", function () { on[o[0]] = !on[o[0]]; paint(); try { localStorage.setItem("margins2", JSON.stringify(on)); } catch (e) {} });
-    paint(); bar.appendChild(b);
+    b.addEventListener("click", function () { current = o[0]; try { localStorage.setItem("photos", current); } catch (e) {} paint(); });
+    btns.push(b); bar.appendChild(b);
   });
-  bar.appendChild(el("span", "warn", "Make this window wider to see the margins (laptop or desktop width)."));
   body.appendChild(bar);
+  paint();
 })();
