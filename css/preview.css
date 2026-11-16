@@ -1,58 +1,63 @@
-/* Margin options, for comparing. Only the chosen ones will move into site.css. */
-
-/* 1. scene numbers */
-.scene-no { display: none; }
+/* Margin options, round two. Only the chosen ones will move into site.css. */
+:root { --mw: calc((100vw - 1040px) / 2); }
+.mg { display: none; }
 @media (min-width: 1280px) {
-  .m-scenes .scene-host { position: relative; }
-  .m-scenes .scene-no { display: block; position: absolute; top: 0; font-family: var(--type); font-weight: 700; font-size: 17px; line-height: inherit; color: var(--mist); text-transform: none; clip-path: none; }
-  .m-scenes .scene-no.l { left: -78px; }
-  .m-scenes .scene-no.r { right: -78px; }
-  .m-scenes .page-title.slug { animation: none; }
-}
+  .mg { position: fixed; top: 0; bottom: 0; z-index: 4; pointer-events: none; }
+  .mg.l { left: 0; width: var(--mw); }
+  .mg.r { right: 0; width: var(--mw); }
 
-/* 2. binder tabs */
-.tabs { display: none; }
-@media (min-width: 1280px) {
-  .m-tabs .tabs { display: grid; gap: 10px; position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 20; }
-  .tabs a { display: block; width: 132px; padding: 9px 14px 9px 16px; font-family: var(--type); font-weight: 700; font-size: 14px; text-decoration: none; color: #fff; border-radius: 10px 0 0 10px; box-shadow: -3px 3px 8px rgba(0,0,0,.18); transform: translateX(34px); transition: transform .2s ease; }
-  .tabs a:hover, .tabs a[aria-current="page"] { transform: translateX(0); }
-  .tabs a:nth-child(1) { background: #171717; } .tabs a:nth-child(2) { background: #b3261e; }
-  .tabs a:nth-child(3) { background: #c98a12; } .tabs a:nth-child(4) { background: #2a4fa3; } .tabs a:nth-child(5) { background: #2f6b3a; }
-}
+  /* A. stickers floating in the margins */
+  .m-scatter .mg-scatter { display: block; }
+  .sc { position: absolute; left: 50%; translate: -50% calc(var(--sy, 0) * var(--k, 0.1) * -1px); }
+  .sc > span { display: block; background: #fff; border: 1px solid #d9d7cf; border-radius: 18px; padding: 8px; box-shadow: 0 4px 10px rgba(0,0,0,.16); animation: sc-float 4s ease-in-out infinite alternate; }
+  .sc svg { display: block; width: 100%; height: auto; }
+  @keyframes sc-float { from { transform: rotate(var(--r, 0deg)) translateY(5px); } to { transform: rotate(calc(var(--r, 0deg) + 6deg)) translateY(-7px); } }
 
-/* 3. red-pencil margin notes */
-.mnote { display: none; }
-@media (min-width: 1280px) {
-  .m-notes .mnote-host { position: relative; }
-  .m-notes .mnote { display: block; position: absolute; width: 150px; font-family: "Caveat", "Segoe Print", cursive; font-weight: 700; font-size: 23px; line-height: 1.05; color: var(--red); }
-  .m-notes .mnote.l { left: -178px; text-align: right; transform: rotate(-5deg); }
-  .m-notes .mnote.r { right: -178px; transform: rotate(4deg); }
-}
+  /* B. footprints that walk down the left margin as you scroll */
+  .m-steps .mg-steps { display: block; }
+  .mg-steps svg { position: absolute; left: 50%; top: 84px; height: calc(100% - 110px); width: 110px; transform: translateX(-34%); overflow: visible; }
+  .mg-steps .fp { opacity: .12; transition: opacity .3s ease; }
+  .mg-steps .fp.on { opacity: 1; }
 
-/* 4. film strip */
-.strip { display: none; }
-@media (min-width: 1280px) {
-  .m-strip .strip { display: block; position: fixed; right: 30px; top: 0; bottom: 0; width: 86px; z-index: 4; overflow: hidden; background: #171717;
-    box-shadow: 0 0 12px rgba(0,0,0,.25); }
-  .strip::before, .strip::after { content: ""; position: absolute; top: -40px; bottom: -40px; width: 9px; z-index: 2;
-    background: repeating-linear-gradient(180deg, #fbfbf8 0 9px, transparent 9px 20px); border-radius: 2px; }
-  .strip::before { left: 5px; } .strip::after { right: 5px; }
-  .strip-reel { position: absolute; left: 19px; right: 19px; top: 0; display: grid; gap: 8px; will-change: transform; }
-  .strip-frame { height: 62px; background: #f4f1ea; border-radius: 3px; display: grid; place-items: center; }
-  .strip-frame svg { width: 40px; height: 40px; }
-  .m-strip .tabs { right: 126px; }
-}
+  /* C. taped polaroids */
+  .m-polaroids .mg-polaroids { display: block; }
+  .pol { position: absolute; left: 50%; width: 150px; translate: -50% calc(var(--sy, 0) * var(--k, 0.06) * -1px); }
+  .pol > div { background: #fff; padding: 10px 10px 8px; box-shadow: 0 6px 14px rgba(0,0,0,.2); transform: rotate(var(--r, 0deg)); position: relative; }
+  .pol > div::before { content: ""; position: absolute; top: -10px; left: 50%; width: 62px; height: 20px; margin-left: -31px; background: rgba(236, 219, 166, .85); transform: rotate(-4deg); box-shadow: 0 1px 2px rgba(0,0,0,.18); }
+  .pol .shot { aspect-ratio: 1; background: #eceae3; display: grid; place-items: center; }
+  .pol .shot svg { width: 70%; height: auto; }
+  .pol p { font-family: "Caveat", "Segoe Print", cursive; font-weight: 700; font-size: 20px; line-height: 1.1; color: #2b2b2b; text-align: center; margin-top: 6px; }
 
-/* 5. page number and continued */
-.pageno, .contd { display: none; }
-@media (min-width: 1280px) {
-  .m-pages .pageno { display: block; position: fixed; top: 84px; right: 44px; z-index: 6; font-family: var(--type); font-weight: 700; font-size: 18px; color: var(--ink); }
-  .m-pages .contd { display: block; position: fixed; bottom: 70px; right: 44px; z-index: 6; font-family: var(--type); font-size: 14px; color: var(--mist); }
-  .m-pages.m-strip .pageno, .m-pages.m-strip .contd { right: 140px; }
-}
+  /* D. marquee lights */
+  .m-marquee .mg-marquee { display: block; }
+  .mg-marquee .bulbs { position: absolute; top: 70px; bottom: 16px; width: 18px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+  .mg-marquee.l .bulbs { right: 34px; } .mg-marquee.r .bulbs { left: 34px; }
+  .mg-marquee .bulbs i { width: 14px; height: 14px; border-radius: 50%; background: #6b5520; animation: bulb 1.2s linear infinite; animation-delay: calc(var(--i) * -0.12s); }
+  @keyframes bulb { 0%, 24% { background: #ffe9a8; box-shadow: 0 0 12px 4px rgba(253, 181, 21, .75); } 25%, 100% { background: #6b5520; box-shadow: none; } }
 
-/* 6. wider page */
-@media (min-width: 1280px) { .m-wide .wrap, .m-wide .nav { max-width: 1320px; } }
+  /* E. theatre curtains */
+  .m-curtains .mg-curtains { display: block; z-index: 6; }
+  .m-curtains .holes { display: none; }
+  .mg-curtains .drape { position: absolute; top: 0; bottom: 0; width: calc(var(--mw) - 26px);
+    background: repeating-linear-gradient(90deg, #5e0d12 0 14px, #8f1820 14px 30px, #b3261e 30px 40px, #7a1219 40px 54px);
+    box-shadow: inset 0 -30px 40px rgba(0,0,0,.35); }
+  .mg-curtains.l .drape { left: 0; border-bottom-right-radius: 60% 6%; animation: part-l 1.6s cubic-bezier(.3, 0, .2, 1) both, sway-l 6s ease-in-out 1.6s infinite alternate; transform-origin: 0 0; box-shadow: inset 0 -30px 40px rgba(0,0,0,.35), 8px 0 16px rgba(0,0,0,.25); }
+  .mg-curtains.r .drape { right: 0; border-bottom-left-radius: 60% 6%; animation: part-r 1.6s cubic-bezier(.3, 0, .2, 1) both, sway-r 6s ease-in-out 1.6s infinite alternate; transform-origin: 100% 0; box-shadow: inset 0 -30px 40px rgba(0,0,0,.35), -8px 0 16px rgba(0,0,0,.25); }
+  .mg-curtains .drape::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: repeating-linear-gradient(90deg, #fdb515 0 4px, #c98a12 4px 8px); }
+  @keyframes part-l { from { transform: scaleX(3.4); } to { transform: scaleX(1); } }
+  @keyframes part-r { from { transform: scaleX(3.4); } to { transform: scaleX(1); } }
+  @keyframes sway-l { from { transform: skewX(0deg); } to { transform: skewX(-1.2deg); } }
+  @keyframes sway-r { from { transform: skewX(0deg); } to { transform: skewX(1.2deg); } }
+
+  /* F. climbing rope that shows how far down the page you are */
+  .m-rope .mg-rope { display: block; }
+  .mg-rope .rope { position: absolute; left: 50%; top: 66px; bottom: 0; width: 7px; margin-left: -3.5px; border-radius: 4px;
+    background: repeating-linear-gradient(160deg, #2a4fa3 0 7px, #fdb515 7px 10px, #2a4fa3 10px 17px, #e9e7df 17px 20px); box-shadow: 1px 0 3px rgba(0,0,0,.25); }
+  .mg-rope .bolt { position: absolute; left: 50%; top: 56px; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e8eaee, #8a8f98 70%); box-shadow: 0 2px 3px rgba(0,0,0,.3); }
+  .mg-rope .hold { position: absolute; width: 30px; height: 22px; border-radius: 50% 45% 55% 40%; border: 2px solid #171717; }
+  .mg-rope .biner { position: absolute; left: 50%; width: 52px; margin-left: -12px; top: calc(80px + (100vh - 170px) * var(--p, 0)); transition: top .15s linear; }
+  .mg-rope .biner svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 3px 4px rgba(0,0,0,.25)); }
+}
 
 /* the chooser */
 .chooser { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 50; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; max-width: calc(100% - 20px);
@@ -63,3 +68,4 @@
 .chooser .warn { display: none; width: 100%; text-align: center; color: #ffb3a8; }
 @media (max-width: 1279px) { .chooser .warn { display: block; } }
 .foot { padding-bottom: 110px; }
+:root[data-motion="off"] .mg-steps .fp { opacity: 1; }

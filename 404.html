@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scene missing | Ian Pua</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .lost { max-width: 720px; margin: 0 auto; padding: 12vh 24px 80px; }
+  .lost-slug { font-weight: 700; color: var(--red); }
+  .lost h1 { font-family: var(--title); font-style: italic; font-weight: 500; font-size: clamp(56px, 12vw, 104px); line-height: 1; margin: 14px 0 26px; }
+  .lost p { max-width: 34em; margin-bottom: 14px; }
+  .lost .who { text-align: center; font-weight: 700; margin: 28px 0 2px; }
+  .lost .line { text-align: center; max-width: 22em; margin: 0 auto 30px; }
+  .slate { display: inline-block; margin-top: 8px; font-weight: 700; text-decoration: none; color: var(--paper); background: var(--ink); border-radius: 4px; padding: 11px 20px; }
+  .slate:hover { background: var(--red); }
+  .cut { text-align: right; font-weight: 700; color: var(--mist); margin-top: 60px; }
+</style>
+</head>
+<body>
+<main class="lost">
+  <p class="lost-slug">INT. NOWHERE &ndash; NIGHT</p>
+  <h1>Scene missing</h1>
+  <p>An empty page. A cursor blinks where the scene should be.</p>
+  <p>The page you were looking for isn't in this draft. It may have been cut, renamed, or never written.</p>
+  <p class="who">IAN</p>
+  <p class="line">(checking the script)<br>That one's not in here.</p>
+  <a class="slate" href="/">Back to page one</a>
+  <p class="cut">CUT TO: HOME.</p>
+</main>
+<script>
+  try { var m = localStorage.getItem("mode"); if (m === "light" || m === "dark") document.documentElement.setAttribute("data-theme", m); } catch (e) {}
+</script>
+</body>
+</html>

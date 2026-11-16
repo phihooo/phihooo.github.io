@@ -55,6 +55,23 @@ window.SITE = {
   // Example: { icon: "home", label: "from", value: "Singapore" }
   facts: [],
 
+  // Shown in the footer as "Last updated ...". Change it when you edit the site.
+  updated: "November 2026",
+
+  // Work page: Experience. Newest first. Leave empty to show "Coming soon".
+  // Example:
+  //   { role: "Machine Learning Engineer", org: "Student Association for Applied Statistics",
+  //     when: "2026 \u2013 now", where: "Berkeley",
+  //     points: ["What you did, in one line.", "A result, with a number if you have one."] }
+  experience: [],
+
+  // Work page: Projects. Leave empty to show "Coming soon".
+  // Example:
+  //   { name: "LLM reasoning in poker", when: "2026",
+  //     blurb: "One or two sentences on what it is and what you found.",
+  //     tags: ["Python", "LLMs"], link: "https://github.com/phihooo/...", sticker: "cards" }
+  projects: [],
+
   // Media diet page.
   //   type:   "book", "film", "tv" or "article"
   //   status: "now" (in progress) or "done"

@@ -91,7 +91,7 @@
     chicken: '<path d="M10 22 L4 16 L8 28" fill="#fff"/><ellipse cx="21" cy="28" rx="13" ry="10.500" fill="#fff"/><circle cx="33" cy="15" r="6.500" fill="#fff"/><path d="M30 9 q1.500 -4 3.500 0 q1.500 -4 3.500 0" fill="#b3261e"/><path d="M39 14 L45 16 L39 18.500 Z" fill="#fdb515"/><circle cx="34.500" cy="14" r="1.300" fill="#171717" stroke="none"/><path d="M18 38 V44 M25 38 V44" stroke="#c98a12"/>',
     planet: '<circle cx="24" cy="24" r="11" fill="#d98b4a"/><path d="M15 20 q9 4 18 0" fill="none" stroke-width="1.300"/><ellipse cx="24" cy="24" rx="21" ry="6" transform="rotate(-20 24 24)" fill="none"/><g fill="#171717" stroke="none"><circle cx="7" cy="9" r="1.400"/><circle cx="41" cy="38" r="1.400"/><circle cx="39" cy="8" r="1"/></g>'
   };
-  window.__ART = { keys: Object.keys(MEDIA_ART), draw: function (k) { return mediaArt(k); } };
+  window.__ART = { keys: Object.keys(MEDIA_ART), draw: function (k) { return mediaArt(k); }, stickers: STICKERS };
   function mediaArt(key) {
     return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + MEDIA_ART[key] + '</svg>';
   }
@@ -100,6 +100,23 @@
 
   function ico(key) { var n = el("span", "ico"); n.innerHTML = iconSvg(key); return n; }
   document.querySelectorAll("[data-icon]").forEach(function (n) { n.innerHTML = iconSvg(n.getAttribute("data-icon")); });
+
+  // motion is off if the visitor's device asks for less motion, or they pressed the pause button
+  var mqCalm = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  function motionOff() { return document.documentElement.getAttribute("data-motion") === "off" || !!(mqCalm && mqCalm.matches); }
+  function copyButton(text) {
+    var b = el("button", "copy", "Copy");
+    b.type = "button";
+    b.setAttribute("aria-label", "Copy " + text);
+    b.addEventListener("click", function () {
+      function done(ok) { b.textContent = ok ? "Copied" : "Press Ctrl+C"; window.setTimeout(function () { b.textContent = "Copy"; }, 1600); }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); }); return; }
+      } catch (e) {}
+      done(false);
+    });
+    return b;
+  }
 
   var S = window.SITE || {};
   var adv = S.adventures || {};
@@ -110,7 +127,7 @@
   var hl = byId("hero-links");
   if (hl) {
     (S.links || []).forEach(function (l) { hl.appendChild(link(l.label, l.url)); });
-    if (S.email) hl.appendChild(el("span", "", S.email));
+    if (S.email) { var em = el("span", "email", S.email); em.appendChild(copyButton(S.email)); hl.appendChild(em); }
   }
   var qb = byId("quote");
   if (qb && S.quote && S.quote.text) {
@@ -145,6 +162,53 @@
   fill("about-facts", facts);
   var factsBox = byId("about-facts");
   if (factsBox && !facts.length) factsBox.hidden = true;
+
+  // ---------- work ----------
+  var xp = S.experience || [], projects = S.projects || [];
+  if (xp.length && byId("xp-list")) {
+    fill("xp-list", xp.map(function (j) {
+      var li = el("li", "xp-item");
+      li.appendChild(el("p", "xp-when", j.when || ""));
+      var body = el("div");
+      body.appendChild(el("p", "xp-role", j.role));
+      body.appendChild(el("p", "xp-org", [j.org, j.where].filter(Boolean).join(", ")));
+      if (j.points && j.points.length) {
+        var ul = el("ul", "xp-points");
+        j.points.forEach(function (pt) { ul.appendChild(el("li", "", pt)); });
+        body.appendChild(ul);
+      }
+      if (j.link) { var more = el("p", "xp-link"); more.appendChild(link("More about this", j.link)); body.appendChild(more); }
+      li.appendChild(body);
+      return li;
+    }));
+    byId("xp-list").hidden = false; byId("xp-empty").hidden = true;
+  }
+  if (projects.length && byId("proj-list")) {
+    fill("proj-list", projects.map(function (pr) {
+      var li = el("li", "proj");
+      var head = el("div", "proj-head");
+      if (pr.sticker && (MEDIA_ART[pr.sticker] || STICKERS[pr.sticker])) {
+        var art = el("span", "msticker");
+        art.innerHTML = MEDIA_ART[pr.sticker] ? mediaArt(pr.sticker) : STICKERS[pr.sticker];
+        head.appendChild(art);
+      }
+      var names = el("div");
+      names.appendChild(el("p", "proj-name", pr.name));
+      if (pr.when) names.appendChild(el("p", "proj-when", pr.when));
+      head.appendChild(names);
+      li.appendChild(head);
+      if (pr.blurb) li.appendChild(el("p", "proj-blurb", pr.blurb));
+      if (pr.tags && pr.tags.length) {
+        var tags = el("ul", "proj-tags");
+        pr.tags.forEach(function (t) { tags.appendChild(el("li", "", t)); });
+        li.appendChild(tags);
+      }
+      if (pr.link) { var go = el("p", "proj-link"); go.appendChild(link("See the project", pr.link)); li.appendChild(go); }
+      return li;
+    }));
+    byId("proj-list").hidden = false; byId("proj-empty").hidden = true;
+    var note = document.querySelector(".sticky"); if (note && xp.length) note.hidden = true;
+  }
 
   // ---------- media diet ----------
   var TYPES = [
@@ -350,12 +414,37 @@
     var m = el("a", "", S.email);
     m.href = "mailto:" + S.email;
     mail.appendChild(m);
+    mail.appendChild(copyButton(S.email));
   }
+  if (S.updated) setText("foot-updated", "Last updated " + S.updated + ".");
   fill("foot-links", (S.links || []).map(function (l) {
     var li = el("li");
     li.appendChild(link(l.label, l.url));
     return li;
   }));
+
+  // ---------- motion on and off ----------
+  var motionBtn = byId("motion");
+  var PAUSE = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1" fill="currentColor"/><rect x="13.800" y="5" width="4.200" height="14" rx="1" fill="currentColor"/></svg>';
+  var PLAY = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5.500v13l11-6.500z" fill="currentColor"/></svg>';
+  function labelMotion() {
+    if (!motionBtn) return;
+    var off = document.documentElement.getAttribute("data-motion") === "off";
+    motionBtn.innerHTML = off ? PLAY : PAUSE;
+    motionBtn.setAttribute("aria-label", off ? "Turn animations on" : "Turn animations off");
+    motionBtn.title = off ? "Animations are off" : "Pause animations";
+  }
+  try { if (localStorage.getItem("motion") === "off") document.documentElement.setAttribute("data-motion", "off"); } catch (e) {}
+  if (motionBtn) {
+    motionBtn.addEventListener("click", function () {
+      var off = document.documentElement.getAttribute("data-motion") === "off";
+      if (off) document.documentElement.removeAttribute("data-motion"); else document.documentElement.setAttribute("data-motion", "off");
+      try { localStorage.setItem("motion", off ? "on" : "off"); } catch (e) {}
+      labelMotion();
+      if (onHome) startScreen();
+    });
+  }
+  labelMotion();
 
   // ---------- day and night ----------
   var html = document.documentElement;
@@ -377,7 +466,6 @@
     modeBtn.title = night ? "Day mode" : "Night mode";
   }
   var lights = byId("lights");
-  var calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var pulling = false;
   function flip() {
     var to = isNight() ? "light" : "dark";
@@ -388,7 +476,7 @@
   }
   if (modeBtn) {
     modeBtn.addEventListener("click", function () {
-      if (calm) { flip(); return; }
+      if (motionOff()) { flip(); return; }
       if (pulling) return;
       pulling = true;
       // tug the cord, switch at the bottom of the pull, then let the light flicker
@@ -472,7 +560,6 @@
   var ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
   var overlay = byId("screen-html");
   var raf = 0, typer = 0, ticker = 0;
-  var still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var FACE = "'Courier Prime', 'Courier New', monospace";
 
   // the time right now in another time zone
@@ -590,7 +677,7 @@
     var text = [S.title || "", "by", "Ian Pua", "FADE IN:", sceneHeading().text, pool[pickAt] || ""];
     var cursor = el("span", "cursor");
     overlay.appendChild(box);
-    if (still) { lines.forEach(function (n, i) { n.textContent = text[i]; }); return; }
+    if (motionOff()) { lines.forEach(function (n, i) { n.textContent = text[i]; }); return; }
     var li = 0, ci = 0;
     function step() {
       if (li >= lines.length) { lines[lines.length - 1].appendChild(cursor); return; }
@@ -651,11 +738,11 @@
     overlay.hidden = key === "leader" || key === "clocks";
     prep();
     if (key === "leader") {
-      if (still) drawLeader(250);
+      if (motionOff()) drawLeader(250);
       else raf = window.requestAnimationFrame(function loop(t) { drawLeader(t); raf = window.requestAnimationFrame(loop); });
     } else if (key === "clocks") {
       drawClocks();
-      ticker = window.setInterval(drawClocks, still ? 15000 : 1000);
+      ticker = window.setInterval(drawClocks, motionOff() ? 15000 : 1000);
     } else if (key === "heading") showHeading();
     else if (key === "fadein") showFadeIn();
     else showSlate();
@@ -666,7 +753,7 @@
     if (!onHome || !ctx) return;
     var key = SCREENS[screenIndex].key;
     if (key === "clocks") drawClocks();
-    if (key === "leader" && still) drawLeader(250);
+    if (key === "leader" && motionOff()) drawLeader(250);
   });
 
   SCREENS.forEach(function (sc, i) { if (sc.key === (S.screen || "fadein")) screenIndex = i; });
