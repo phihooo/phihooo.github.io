@@ -73,6 +73,27 @@
     stampuk: '<svg viewBox="0 0 170 110"><g transform="rotate(5 85 55)"><g fill="none" stroke="#2a4fa3"><rect x="10" y="14" width="150" height="82" rx="6" stroke-width="3"/><rect x="16" y="20" width="138" height="70" rx="3" stroke-width="1"/></g><text x="85" y="46" text-anchor="middle" fill="#2a4fa3" ' + F + ' font-size="15" letter-spacing="1">UNITED KINGDOM</text><path d="M30 54 H140" stroke="#2a4fa3" stroke-width="1.500"/><text x="85" y="74" text-anchor="middle" fill="#2a4fa3" ' + F + ' font-size="12">BOARDING SCHOOL</text></g></svg>',
     stampus: '<svg viewBox="0 0 170 120"><g transform="rotate(-6 85 60)"><g fill="none" stroke="#2f6b3a"><ellipse cx="85" cy="60" rx="76" ry="48" stroke-width="3"/><ellipse cx="85" cy="60" rx="69" ry="41" stroke-width="1"/></g><text x="85" y="52" text-anchor="middle" fill="#2f6b3a" ' + F + ' font-size="15" letter-spacing="1">BERKELEY, CA</text><text x="85" y="72" text-anchor="middle" fill="#2f6b3a" ' + F + ' font-size="12">ARRIVED 2026</text><text x="85" y="89" text-anchor="middle" fill="#2f6b3a" ' + F + ' font-size="10">37.87° N</text></g></svg>'
   };
+  // small drawings for the media list
+  var MEDIA_ART = {
+    axe: '<path d="M14 41 L29 12" stroke="#8a5a2b" stroke-width="4.500"/><path d="M25 9 L38 11 C40 17 38 23 33 27 L22 18 Z" fill="#c9ced6"/>',
+    jelly: '<path d="M9 24 a15 15 0 0 1 30 0 z" fill="#7fd0e8"/><path d="M15 24 q-3 5 0 9 q3 4 0 8 M21 24 q-3 5 0 9 q3 4 0 8 M27 24 q3 5 0 9 q-3 4 0 8 M33 24 q3 5 0 9 q-3 4 0 8" fill="none"/>',
+    moth: '<path d="M24 16 C14 4 4 10 7 20 C9 26 18 26 24 22 C30 26 39 26 41 20 C44 10 34 4 24 16 Z" fill="#9db7e8"/><path d="M24 24 C17 26 12 32 15 38 C19 41 23 34 24 28 C25 34 29 41 33 38 C36 32 31 26 24 24 Z" fill="#c9d8f3"/><path d="M24 14 V34" stroke-width="3.500"/><path d="M24 14 q-4 -6 -8 -6 M24 14 q4 -6 8 -6" fill="none" stroke-width="1.500"/>',
+    eye: '<path d="M4 24 Q24 6 44 24 Q24 42 4 24 Z" fill="#fff"/><circle cx="24" cy="24" r="8.500" fill="#4f86d9"/><circle cx="24" cy="24" r="3.600" fill="#171717" stroke="none"/><circle cx="27" cy="21" r="1.500" fill="#fff" stroke="none"/>',
+    dunes: '<circle cx="34" cy="13" r="6.500" fill="#fdb515"/><path d="M3 40 Q14 20 26 31 Q34 22 45 33 V42 H3 Z" fill="#e3b56b"/><path d="M26 31 Q21 36 19 42" fill="none" stroke-width="1.500"/>',
+    sunrise: '<path d="M11 32 a13 13 0 0 1 26 0 z" fill="#ff9a4a"/><path d="M4 32 H44" /><path d="M24 8 V13 M9 15 L12.500 18.500 M39 15 L35.500 18.500" fill="none"/><path d="M12 38 H36 M17 43 H31" fill="none" stroke-width="1.500"/>',
+    fox: '<path d="M7 9 L18 17 H30 L41 9 L39 28 L24 42 L9 28 Z" fill="#e8792b"/><path d="M9 28 L24 42 L39 28 L30 29 L24 35 L18 29 Z" fill="#fff"/><circle cx="18" cy="24" r="1.800" fill="#171717" stroke="none"/><circle cx="30" cy="24" r="1.800" fill="#171717" stroke="none"/><circle cx="24" cy="40" r="2.200" fill="#171717" stroke="none"/>',
+    quill: '<path d="M40 5 C22 7 11 20 11 34 C25 34 40 24 40 5 Z" fill="#efe9d6"/><path d="M40 5 L7 43" /><path d="M22 20 L15 27 M29 15 L20 24" fill="none" stroke-width="1.300"/>',
+    camera: '<rect x="14" y="9" width="11" height="8" rx="2" fill="#6a6a6a"/><rect x="5" y="15" width="38" height="25" rx="4" fill="#4a4a4a"/><circle cx="24" cy="27.500" r="8.500" fill="#9cc3e6"/><circle cx="24" cy="27.500" r="3.500" fill="#171717" stroke="none"/><circle cx="37" cy="21" r="1.800" fill="#fdb515" stroke="none"/>',
+    atom: '<g fill="none" stroke="#2a4fa3"><ellipse cx="24" cy="24" rx="19" ry="7.500"/><ellipse cx="24" cy="24" rx="19" ry="7.500" transform="rotate(60 24 24)"/><ellipse cx="24" cy="24" rx="19" ry="7.500" transform="rotate(120 24 24)"/></g><circle cx="24" cy="24" r="4.200" fill="#b3261e"/>',
+    thread: '<path d="M10 35 C16 8 22 46 27 24 S33 4 38 13" fill="none" stroke="#b3261e" stroke-width="2.600"/><circle cx="10" cy="35" r="4.500" fill="#fdb515"/><circle cx="38" cy="13" r="4.500" fill="#4f86d9"/>',
+    palette: '<path d="M24 6 C11 6 4 15 4 24 C4 35 13 42 22 42 C26 42 26.500 38 24.500 36 C22 33 25 30 29 30 H36 C41 30 44 26 44 22 C44 12 35 6 24 6 Z" fill="#e8cfa0"/><g stroke-width="1.300"><circle cx="13" cy="21" r="3.300" fill="#b3261e"/><circle cx="21" cy="13.500" r="3.300" fill="#2a4fa3"/><circle cx="31" cy="13.500" r="3.300" fill="#fdb515"/><circle cx="37.500" cy="21" r="3.300" fill="#ff8a3d"/></g>',
+    chicken: '<path d="M10 22 L4 16 L8 28" fill="#fff"/><ellipse cx="21" cy="28" rx="13" ry="10.500" fill="#fff"/><circle cx="33" cy="15" r="6.500" fill="#fff"/><path d="M30 9 q1.500 -4 3.500 0 q1.500 -4 3.500 0" fill="#b3261e"/><path d="M39 14 L45 16 L39 18.500 Z" fill="#fdb515"/><circle cx="34.500" cy="14" r="1.300" fill="#171717" stroke="none"/><path d="M18 38 V44 M25 38 V44" stroke="#c98a12"/>',
+    planet: '<circle cx="24" cy="24" r="11" fill="#d98b4a"/><path d="M15 20 q9 4 18 0" fill="none" stroke-width="1.300"/><ellipse cx="24" cy="24" rx="21" ry="6" transform="rotate(-20 24 24)" fill="none"/><g fill="#171717" stroke="none"><circle cx="7" cy="9" r="1.400"/><circle cx="41" cy="38" r="1.400"/><circle cx="39" cy="8" r="1"/></g>'
+  };
+  function mediaArt(key) {
+    return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + MEDIA_ART[key] + '</svg>';
+  }
+
   document.querySelectorAll("[data-sticker]").forEach(function (n) { n.innerHTML = STICKERS[n.getAttribute("data-sticker")] || ""; });
 
   function ico(key) { var n = el("span", "ico"); n.innerHTML = iconSvg(key); return n; }
@@ -121,6 +142,14 @@
   var mediaFilter = "all";
   function mediaRow(m) {
     var li = el("li", "media-row");
+    var art = el("span", "msticker");
+    if (m.sticker && MEDIA_ART[m.sticker]) {
+      art.innerHTML = mediaArt(m.sticker);
+      // tilt each one a little differently, like stickers put on by hand
+      var tilt = ((m.title.length * 7) % 13) - 6;
+      art.style.transform = "rotate(" + tilt + "deg)";
+    } else art.className = "msticker empty";
+    li.appendChild(art);
     var body = el("div");
     var title = el("p", "book-title");
     if (m.url) title.appendChild(link(m.title, m.url)); else title.textContent = m.title;

@@ -58,28 +58,31 @@ window.SITE = {
   //   type:   "book", "film", "tv" or "article"
   //   status: "now" (in progress) or "done"
   //   by:     author, director or publication (optional)
+  //   sticker: a small drawing beside the title. One of: axe, jelly, moth, eye,
+  //            dunes, sunrise, fox, quill, camera, atom, thread, palette,
+  //            chicken, planet. Leave it out for none.
   //   when:   a year or date shown on the right. Films use the release year. (optional)
   //   note:   what stayed with you (optional)
   //   url:    link, mainly for articles (optional)
   media: [
     {
       type: "book", status: "done",
-      title: "Crime and Punishment", by: "Fyodor Dostoevsky",
+      sticker: "axe", title: "Crime and Punishment", by: "Fyodor Dostoevsky",
       note: "Read slowly, chapter by chapter. It left me with a thesis about Raskolnikov's extraordinary-man theory and modern figures who mistake being beyond the law for being beyond morality."
     },
-    { type: "book", status: "done", title: "\u00c1gua Viva", by: "Clarice Lispector" },
-    { type: "book", status: "done", title: "Strange the Dreamer", by: "Laini Taylor" },
-    { type: "film", status: "done", title: "You Can See Everything", when: "2026" },
-    { type: "film", status: "done", title: "Dune: Part One and Part Two", when: "2021, 2024" },
-    { type: "film", status: "done", title: "The Before Trilogy", when: "1995\u20132013" },
-    { type: "film", status: "done", title: "Fantastic Mr. Fox", when: "2009" },
-    { type: "film", status: "done", title: "Pride & Prejudice", when: "2005" },
-    { type: "film", status: "done", title: "Yi Yi", when: "2000" },
-    { type: "film", status: "done", title: "Oppenheimer", when: "2023" },
-    { type: "film", status: "done", title: "Past Lives", when: "2023" },
-    { type: "film", status: "done", title: "Portrait of a Lady on Fire", when: "2019" },
-    { type: "film", status: "done", title: "City of God", when: "2002" },
-    { type: "tv", status: "done", title: "Andor", when: "2022" }
+    { type: "book", status: "done", sticker: "jelly", title: "\u00c1gua Viva", by: "Clarice Lispector" },
+    { type: "book", status: "done", sticker: "moth", title: "Strange the Dreamer", by: "Laini Taylor" },
+    { type: "film", status: "done", sticker: "eye", title: "You Can See Everything", when: "2026" },
+    { type: "film", status: "done", sticker: "dunes", title: "Dune: Part One and Part Two", when: "2021, 2024" },
+    { type: "film", status: "done", sticker: "sunrise", title: "The Before Trilogy", when: "1995\u20132013" },
+    { type: "film", status: "done", sticker: "fox", title: "Fantastic Mr. Fox", when: "2009" },
+    { type: "film", status: "done", sticker: "quill", title: "Pride & Prejudice", when: "2005" },
+    { type: "film", status: "done", sticker: "camera", title: "Yi Yi", when: "2000" },
+    { type: "film", status: "done", sticker: "atom", title: "Oppenheimer", when: "2023" },
+    { type: "film", status: "done", sticker: "thread", title: "Past Lives", when: "2023" },
+    { type: "film", status: "done", sticker: "palette", title: "Portrait of a Lady on Fire", when: "2019" },
+    { type: "film", status: "done", sticker: "chicken", title: "City of God", when: "2002" },
+    { type: "tv", status: "done", sticker: "planet", title: "Andor", when: "2022" }
   ],
 
   // Writing page.
