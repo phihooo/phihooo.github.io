@@ -410,42 +410,24 @@
   } catch (e) {}
   labelMode();
 
-  // ---------- the first name: fades into a pixel font on hover, and swaps between Ian and Hian Hoe ----------
-  var first = byId("first-name");
-  if (first) {
-    var NAMES = ["Ian", "Hian Hoe"];
-    var serif = first.querySelector(".f-serif"), pixel = first.querySelector(".f-pixel");
-    var showing = 0, cameFrom = 0, inside = false;
+  // ---------- the name: "Ian Pua" eases into "Hian Hoe Pua" while hovered ----------
+  var hit = byId("name-hit"), first = byId("first-name");
+  if (hit && first) {
+    var shortName = first.querySelector(".f-a"), longName = first.querySelector(".f-b");
     var widthOf = function (layer) { return Math.ceil(layer.getBoundingClientRect().width); };
-    var fit = function (px) { first.style.width = px + "px"; };
-    var enter = function () {
-      if (inside) return;
-      inside = true;
-      cameFrom = showing;
-      showing = 0;                          // hovering always shows "Ian", in pixels
-      pixel.textContent = NAMES[0];
-      fit(widthOf(pixel));
-      first.classList.add("pixelled");
+    var open = false;
+    var setOpen = function (on) {
+      open = on;
+      first.style.width = widthOf(on ? longName : shortName) + "px";
+      hit.classList.toggle("full", on);
     };
-    var leave = function () {
-      if (!inside) return;
-      inside = false;
-      if (cameFrom === 0) showing = 1;      // done hovering "Ian": it becomes "Hian Hoe"
-      serif.textContent = NAMES[showing];
-      fit(widthOf(serif));
-      first.classList.remove("pixelled");
-    };
-    first.addEventListener("mouseenter", enter);
-    first.addEventListener("mouseleave", leave);
-    first.addEventListener("focus", enter);
-    first.addEventListener("blur", leave);
-    // touch screens have no hover: a tap shows the pixels briefly, then swaps
-    first.addEventListener("touchstart", function (e) {
-      e.preventDefault();
-      enter();
-      window.setTimeout(leave, 700);
-    }, { passive: false });
-    var settle = function () { if (!inside) fit(widthOf(serif)); };
+    hit.addEventListener("mouseenter", function () { setOpen(true); });
+    hit.addEventListener("mouseleave", function () { setOpen(false); });
+    hit.addEventListener("focus", function () { setOpen(true); });
+    hit.addEventListener("blur", function () { setOpen(false); });
+    // touch screens have no hover: a tap switches it
+    hit.addEventListener("touchstart", function (e) { e.preventDefault(); setOpen(!open); }, { passive: false });
+    var settle = function () { first.style.width = widthOf(open ? longName : shortName) + "px"; };
     settle();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
     window.addEventListener("resize", settle);

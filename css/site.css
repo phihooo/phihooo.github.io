@@ -433,12 +433,13 @@ button { font: inherit; }
 .now-sticker { display: inline-block; width: 46px; vertical-align: middle; margin: 2px 0 -22px 8px; width: 42px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.18)); }
 @media (prefers-reduced-motion: no-preference) { .now-sticker { animation: sway-cards 3.2s ease-in-out infinite alternate; transform-origin: 50% 90%; } }
 
-/* ---------- first name: cross-fades into a pixel font on hover ---------- */
-.name .first { display: inline-grid; align-items: baseline; justify-items: start; cursor: pointer; white-space: nowrap; outline-offset: 4px; vertical-align: baseline; transition: width .35s ease; }
-.name .first > span { grid-area: 1 / 1; transition: opacity .3s ease, transform .3s ease; }
-.name .f-pixel { font-family: "Pixelify Sans", "VT323", ui-monospace, monospace; font-style: normal; font-weight: 600; font-size: 0.78em; letter-spacing: 0.01em; opacity: 0; transform: translateY(3px); }
-.name .first.pixelled .f-serif { opacity: 0; transform: translateY(-3px); }
-.name .first.pixelled .f-pixel { opacity: 1; transform: translateY(0); }
+/* ---------- the name: "Ian" eases into "Hian Hoe" on hover ---------- */
+.name-hit { display: inline-block; cursor: default; white-space: nowrap; outline-offset: 6px; }
+.name .first { display: inline-grid; justify-items: start; vertical-align: baseline; overflow: visible; transition: width .5s cubic-bezier(.4, 0, .2, 1); }
+.name .first > span { grid-area: 1 / 1; transition: opacity .45s ease, filter .45s ease; }
+.name .f-b { opacity: 0; filter: blur(6px); }
+.name-hit.full .f-a { opacity: 0; filter: blur(6px); }
+.name-hit.full .f-b { opacity: 1; filter: blur(0); }
 @media (prefers-reduced-motion: reduce) { .name .first, .name .first > span { transition: none; } }
 
 /* ---------- pull cord for day and night ---------- */
@@ -458,3 +459,5 @@ button { font: inherit; }
 .now-sticker[data-sticker="boulder"] { width: 46px; }
 .st-stamp { right: 64px; }
 @media (max-width: 900px) { .st-stamp { right: 56px; } }
+/* keep the incoming letters from running over "Pua" while the gap opens */
+.name .first { overflow: hidden; padding: 0.18em 0.1em 0.22em 0.04em; margin: -0.18em -0.1em -0.22em -0.04em; box-sizing: content-box; }
