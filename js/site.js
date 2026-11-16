@@ -148,6 +148,8 @@
       // tilt each one a little differently, like stickers put on by hand
       var tilt = ((m.title.length * 7) % 13) - 6;
       art.style.transform = "rotate(" + tilt + "deg)";
+      art.className = "msticker ms-" + m.sticker;
+      art.style.setProperty("--d", ((m.title.length * 37) % 23) / 10 + "s");   // so they don't all move in step
     } else art.className = "msticker empty";
     li.appendChild(art);
     var body = el("div");
