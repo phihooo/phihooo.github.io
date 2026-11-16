@@ -289,3 +289,53 @@ button { font: inherit; }
 @keyframes step { 0% { opacity: 0; } 3% { opacity: 1; } 62% { opacity: 1; } 78%, 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .walk .print { animation: none; opacity: 1; } }
 @media (max-width: 820px) { .home-about .about-grid { grid-template-columns: 1fr; } }
+
+/* ---------- stickers, stamps and doodles ---------- */
+.sticker { display: block; pointer-events: none; }
+.sticker svg { display: block; width: 100%; height: auto; overflow: visible; }
+.card { position: relative; }
+.st-stamp { position: absolute; top: -34px; right: -26px; width: 118px; transform: rotate(13deg); opacity: .82; z-index: 2; }
+.st-cards { position: absolute; bottom: -40px; right: 34px; width: 92px; z-index: 2; filter: drop-shadow(0 3px 4px rgba(0,0,0,.18)); }
+.tape { position: absolute; z-index: 3; width: 70px; height: 22px; background: rgba(236, 219, 166, 0.82); box-shadow: 0 1px 2px rgba(0,0,0,.18); }
+.tape-l { top: -8px; left: -22px; transform: rotate(-32deg); }
+.tape-r { top: -8px; right: -22px; transform: rotate(32deg); }
+.screen { overflow: visible; }
+.screen canvas, .screen-html { border-radius: 4px; overflow: hidden; }
+.scribble { font-family: "Caveat", "Segoe Print", cursive; font-weight: 700; font-size: 21px; line-height: 1; color: var(--red); display: flex; align-items: flex-end; justify-content: center; gap: 4px; transform: rotate(-2deg); margin-top: -4px; }
+.st-arrow { width: 26px; flex: none; }
+.home-index { position: relative; }
+.st-coffee { position: absolute; top: 6px; right: 130px; width: 130px; }
+.sticky { font-family: "Caveat", "Segoe Print", cursive; font-weight: 700; font-size: 25px; line-height: 1.1; color: #2b2610; background: #ffe46b; width: 168px; padding: 22px 16px 26px; transform: rotate(4deg); box-shadow: 0 8px 14px rgba(0,0,0,.18); text-align: center; position: absolute; right: 40px; top: 120px; }
+.page { position: relative; }
+.page-stickers { position: absolute; right: 24px; top: 26px; display: flex; align-items: flex-end; gap: 4px; }
+.st-ticket { width: 150px; transform: rotate(-8deg); filter: drop-shadow(0 3px 4px rgba(0,0,0,.18)); }
+.st-popcorn { width: 76px; transform: rotate(6deg); }
+.passport { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; margin-bottom: 26px; opacity: .88; }
+.passport .sticker:nth-child(1) { width: 116px; }
+.passport .sticker:nth-child(2) { width: 160px; }
+.passport .sticker:nth-child(3) { width: 160px; }
+.clipped { position: relative; display: inline-block; margin-top: 30px; background: var(--shelf); border: 1px solid var(--line); padding: 26px 34px 26px 26px; transform: rotate(-1deg); box-shadow: 0 6px 12px rgba(0,0,0,.08); }
+.clipped .pending { margin-top: 0; }
+.st-clip { position: absolute; top: -30px; left: 26px; width: 34px; transform: rotate(8deg); }
+.fade-out { text-align: right; font-weight: 700; padding-top: 8px; padding-bottom: 28px; color: var(--mist); }
+
+/* three-hole punch down the left edge, with brass brads, like a bound script */
+.holes { display: none; }
+@media (min-width: 1240px) {
+  .holes { display: block; position: fixed; left: 26px; top: 0; bottom: 0; width: 22px; z-index: 5; pointer-events: none; }
+  .holes i { position: absolute; left: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--line); box-shadow: inset 0 2px 3px rgba(0,0,0,.28); }
+  .holes i:nth-child(1) { top: 16%; } .holes i:nth-child(2) { top: 50%; } .holes i:nth-child(3) { top: 84%; }
+  .holes i.brad { background: radial-gradient(circle at 35% 30%, #f6dc8c, #c79a2c 60%, #8a6a17); box-shadow: 0 2px 3px rgba(0,0,0,.3); }
+}
+@media (max-width: 900px) {
+  .st-stamp { width: 86px; top: -30px; right: -6px; }
+  .st-cards { width: 70px; right: 14px; bottom: -34px; }
+  .tape { width: 54px; height: 18px; }
+  .tape-l { left: -14px; } .tape-r { right: -14px; }
+  .st-coffee { display: none; }
+  .page-stickers { position: static; margin: -6px 0 18px; }
+  .st-ticket { width: 110px; } .st-popcorn { width: 54px; }
+  .sticky { position: static; margin: 4px 0 30px 8px; font-size: 22px; width: 150px; padding: 16px 12px 20px; }
+  .passport .sticker:nth-child(1) { width: 92px; } .passport .sticker:nth-child(2), .passport .sticker:nth-child(3) { width: 124px; }
+}
+@media (max-width: 900px) { .tape-r { display: none; } .st-stamp { top: -40px; right: -8px; width: 78px; } }

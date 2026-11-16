@@ -16,12 +16,14 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to content</a>
+
+<div class="holes" aria-hidden="true"><i class="brad"></i><i></i><i class="brad"></i></div>
 
 <header class="top">
   <nav class="nav" aria-label="Main">
@@ -42,12 +44,16 @@
   <section class="view" data-view="home">
     <div class="wrap">
       <div class="card">
+        <span class="sticker st-stamp" data-sticker="stamp" aria-hidden="true"></span>
+        <span class="sticker st-cards" data-sticker="cards" aria-hidden="true"></span>
         <div class="screen-col">
           <div class="screen">
+            <i class="tape tape-l" aria-hidden="true"></i><i class="tape tape-r" aria-hidden="true"></i>
             <canvas id="leader" aria-hidden="true"></canvas>
             <div class="screen-html" id="screen-html" hidden></div>
           </div>
           <blockquote class="quote" id="quote" hidden></blockquote>
+          <p class="scribble"><span class="sticker st-arrow" data-sticker="arrow" aria-hidden="true"></span>refresh for a new opening line</p>
         </div>
         <div class="intro">
           <p class="where" id="where"></p>
@@ -103,6 +109,7 @@
       </section>
 
       <div class="home-index">
+        <span class="sticker st-coffee" data-sticker="coffee" aria-hidden="true"></span>
         <h2 class="h-small">On this site</h2>
         <ul class="index">
           <li><a href="#work"><span class="index-name"><span class="ico" data-icon="work"></span>Work</span><span class="index-note">Experience and projects</span></a></li>
@@ -118,6 +125,7 @@
   <section class="view" data-view="work" hidden>
     <div class="wrap page">
       <h1 class="page-title slug">Work</h1>
+      <div class="sticky" aria-hidden="true">still writing<br>this part.<br>back soon!</div>
       <section class="part" id="sec-experience">
         <h2 class="sub"><span class="ico" data-icon="work"></span>Experience</h2>
         <div class="pending">
@@ -139,6 +147,7 @@
   <section class="view" data-view="media" hidden>
     <div class="wrap page">
       <h1 class="page-title slug">Words &amp; pictures</h1>
+      <div class="page-stickers" aria-hidden="true"><span class="sticker st-ticket" data-sticker="ticket"></span><span class="sticker st-popcorn" data-sticker="popcorn"></span></div>
       <p class="page-lede">What I write, and the books, films, TV and articles I take in.</p>
       <section class="part" id="sec-writing">
         <h2 class="sub"><span class="ico" data-icon="pen"></span>Writing</h2>
@@ -175,6 +184,7 @@
       </section>
       <section class="part" id="sec-adventures">
         <h2 class="sub"><span class="ico" data-icon="compass"></span>Adventures</h2>
+        <div class="passport" aria-hidden="true"><span class="sticker" data-sticker="stampsg"></span><span class="sticker" data-sticker="stampuk"></span><span class="sticker" data-sticker="stampus"></span></div>
         <p class="countdown" id="countdown" hidden></p>
         <dl class="stats" id="adventure-stats"></dl>
         <div class="map" id="map"></div>
@@ -189,11 +199,13 @@
   <section class="view" data-view="resume" hidden>
     <div class="wrap page">
       <h1 class="page-title slug">Résumé</h1>
-      <div class="pending" id="resume-box"></div>
+      <div class="clipped"><span class="sticker st-clip" data-sticker="clip" aria-hidden="true"></span><div class="pending" id="resume-box"></div></div>
     </div>
   </section>
 
 </main>
+
+<p class="fade-out wrap" aria-hidden="true">FADE OUT.</p>
 
 <footer class="foot">
   <div class="wrap foot-row">
