@@ -433,10 +433,13 @@ button { font: inherit; }
 .now-sticker { display: inline-block; width: 46px; vertical-align: middle; margin: 2px 0 -22px 8px; width: 42px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.18)); }
 @media (prefers-reduced-motion: no-preference) { .now-sticker { animation: sway-cards 3.2s ease-in-out infinite alternate; transform-origin: 50% 90%; } }
 
-/* ---------- first name: scribble on hover ---------- */
-.defs { position: absolute; }
-.name .first { cursor: pointer; display: inline-block; outline-offset: 4px; }
-.name .first.scribbling { font-family: "Caveat", "Segoe Print", cursive; font-style: normal; font-weight: 700; color: var(--red); filter: url(#scribble); transform: rotate(-3deg); }
+/* ---------- first name: cross-fades into a pixel font on hover ---------- */
+.name .first { display: inline-grid; align-items: baseline; justify-items: start; cursor: pointer; white-space: nowrap; outline-offset: 4px; vertical-align: baseline; transition: width .35s ease; }
+.name .first > span { grid-area: 1 / 1; transition: opacity .3s ease, transform .3s ease; }
+.name .f-pixel { font-family: "Pixelify Sans", "VT323", ui-monospace, monospace; font-style: normal; font-weight: 600; font-size: 0.78em; letter-spacing: 0.01em; opacity: 0; transform: translateY(3px); }
+.name .first.pixelled .f-serif { opacity: 0; transform: translateY(-3px); }
+.name .first.pixelled .f-pixel { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .name .first, .name .first > span { transition: none; } }
 
 /* ---------- pull cord for day and night ---------- */
 .mode { overflow: visible; }

@@ -410,39 +410,45 @@
   } catch (e) {}
   labelMode();
 
-  // ---------- the first name: scribbles on hover, swaps between Ian and Hian Hoe ----------
+  // ---------- the first name: fades into a pixel font on hover, and swaps between Ian and Hian Hoe ----------
   var first = byId("first-name");
   if (first) {
     var NAMES = ["Ian", "Hian Hoe"];
-    var showing = 0, cameFrom = 0;
-    var setName = function (i) { showing = i; first.textContent = NAMES[i]; };
-    var inside = false;
+    var serif = first.querySelector(".f-serif"), pixel = first.querySelector(".f-pixel");
+    var showing = 0, cameFrom = 0, inside = false;
+    var widthOf = function (layer) { return Math.ceil(layer.getBoundingClientRect().width); };
+    var fit = function (px) { first.style.width = px + "px"; };
     var enter = function () {
       if (inside) return;
       inside = true;
       cameFrom = showing;
-      // hold the width so the name doesn't slip out from under the pointer when it changes
-      first.style.minWidth = first.getBoundingClientRect().width + "px";
-      if (showing === 1) setName(0);        // hovering "Hian Hoe" brings back "Ian"
-      first.classList.add("scribbling");
+      showing = 0;                          // hovering always shows "Ian", in pixels
+      pixel.textContent = NAMES[0];
+      fit(widthOf(pixel));
+      first.classList.add("pixelled");
     };
     var leave = function () {
       if (!inside) return;
       inside = false;
-      first.classList.remove("scribbling");
-      first.style.minWidth = "";
-      if (cameFrom === 0) setName(1);       // done hovering "Ian": it becomes "Hian Hoe"
+      if (cameFrom === 0) showing = 1;      // done hovering "Ian": it becomes "Hian Hoe"
+      serif.textContent = NAMES[showing];
+      fit(widthOf(serif));
+      first.classList.remove("pixelled");
     };
     first.addEventListener("mouseenter", enter);
     first.addEventListener("mouseleave", leave);
     first.addEventListener("focus", enter);
     first.addEventListener("blur", leave);
-    // touch screens have no hover: a tap scribbles briefly, then swaps
+    // touch screens have no hover: a tap shows the pixels briefly, then swaps
     first.addEventListener("touchstart", function (e) {
       e.preventDefault();
-      first.classList.add("scribbling");
-      window.setTimeout(function () { first.classList.remove("scribbling"); setName(showing === 0 ? 1 : 0); }, 600);
+      enter();
+      window.setTimeout(leave, 700);
     }, { passive: false });
+    var settle = function () { if (!inside) fit(widthOf(serif)); };
+    settle();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+    window.addEventListener("resize", settle);
   }
 
   // ---------- page switching ----------
