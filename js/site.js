@@ -64,6 +64,7 @@
   var STICKERS = {
     stamp: '<svg viewBox="0 0 130 130"><defs><path id="st-ring" d="M65 65 m-45 0 a45 45 0 1 1 90 0 a45 45 0 1 1 -90 0"/></defs><g fill="none" stroke="#b3261e"><circle cx="65" cy="65" r="60" stroke-width="3.500"/><circle cx="65" cy="65" r="56" stroke-width="1"/><circle cx="65" cy="65" r="34" stroke-width="1.500"/></g><text fill="#b3261e" ' + F + ' font-size="10.500" letter-spacing="1.300"><textPath href="#st-ring">THE BEAUTIFUL GAME OF LIFE ★ FIRST DRAFT ★</textPath></text><text x="65" y="63" text-anchor="middle" fill="#b3261e" ' + F + ' font-size="17">DRAFT</text><text x="65" y="80" text-anchor="middle" fill="#b3261e" ' + F + ' font-size="12">No. 1</text></svg>',
     cards: '<svg viewBox="0 0 110 100"><g transform="rotate(-12 40 55)"><rect x="12" y="14" width="50" height="72" rx="6" fill="#fff" stroke="#171717" stroke-width="2"/><text x="19" y="33" fill="#171717" ' + F + ' font-size="16">A</text><path transform="translate(37 54) scale(1.500)" fill="#171717" d="M0 -8 C6 -2 9 1 9 4.500 A4.500 4.500 0 0 1 1 6.500 L3 11 H-3 L-1 6.500 A4.500 4.500 0 0 1 -9 4.500 C-9 1 -6 -2 0 -8 Z"/></g><g transform="rotate(10 70 55)"><rect x="48" y="16" width="50" height="72" rx="6" fill="#fff" stroke="#171717" stroke-width="2"/><text x="55" y="35" fill="#b3261e" ' + F + ' font-size="16">K</text><path transform="translate(73 58) scale(1.500)" fill="#b3261e" d="M0 9 C-9 2 -9 -5 -4.500 -6 C-2 -6.500 0 -4.500 0 -3 C0 -4.500 2 -6.500 4.500 -6 C9 -5 9 2 0 9 Z"/></g></svg>',
+    boulder: '<svg viewBox="0 0 110 100"><path d="M12 88 L24 34 L56 12 L92 30 L100 88 Z" fill="#d3cfc4" stroke="#171717" stroke-width="2.500" stroke-linejoin="round"/><path d="M56 12 L50 52 L24 34 M50 52 L100 88 M50 52 L40 88" fill="none" stroke="#171717" stroke-width="1.300" opacity=".5"/><g stroke="#171717" stroke-width="1.800"><ellipse cx="38" cy="44" rx="7" ry="5" fill="#b3261e" transform="rotate(-20 38 44)"/><ellipse cx="68" cy="34" rx="6" ry="4.500" fill="#fdb515"/><ellipse cx="62" cy="58" rx="7" ry="5" fill="#2a4fa3" transform="rotate(15 62 58)"/><ellipse cx="82" cy="66" rx="6" ry="4.500" fill="#2f6b3a"/><ellipse cx="30" cy="70" rx="6.500" ry="4.500" fill="#ff8a3d" transform="rotate(-10 30 70)"/></g><g fill="#fff" stroke="#171717" stroke-width="1"><circle cx="52" cy="26" r="2.500"/><circle cx="46" cy="22" r="1.600"/></g></svg>',
     arrow: '<svg viewBox="0 0 40 44"><path d="M30 42 C10 38 6 22 16 6" fill="none" stroke="#b3261e" stroke-width="2.200" stroke-linecap="round"/><path d="M8 13 L16 5 L22 15" fill="none" stroke="#b3261e" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     coffee: '<svg viewBox="0 0 140 140"><g fill="none" stroke="#7a4a1e" stroke-linecap="round"><path d="M70 14 a56 56 0 1 1 -40 17" stroke-width="6" opacity=".16"/><path d="M70 22 a48 48 0 1 0 34 14" stroke-width="2" opacity=".14"/></g><circle cx="126" cy="24" r="3" fill="#7a4a1e" opacity=".16"/><circle cx="118" cy="12" r="1.600" fill="#7a4a1e" opacity=".16"/></svg>',
     ticket: '<svg viewBox="0 0 150 70"><path d="M8 6 H142 V24 a11 11 0 0 0 0 22 V64 H8 V46 a11 11 0 0 0 0 -22 Z" fill="#fdb515" stroke="#171717" stroke-width="2" stroke-linejoin="round"/><path d="M106 10 V60" stroke="#171717" stroke-width="1.500" stroke-dasharray="4 4"/><text x="60" y="33" text-anchor="middle" fill="#171717" ' + F + ' font-size="14">ADMIT</text><text x="60" y="50" text-anchor="middle" fill="#171717" ' + F + ' font-size="14">ONE</text><text x="124" y="40" text-anchor="middle" fill="#171717" ' + F + ' font-size="11" transform="rotate(90 124 36)">No. 451</text></svg>',
@@ -370,16 +371,37 @@
   function labelMode() {
     if (!modeBtn) return;
     var night = isNight();
-    modeBtn.innerHTML = night ? SUN : MOON;   // the icon shows the mode you would switch to
+    var slot = byId("mode-ico") || modeBtn;
+    slot.innerHTML = night ? SUN : MOON;   // the icon shows the mode you would switch to
     modeBtn.setAttribute("aria-label", night ? "Switch to day mode" : "Switch to night mode");
     modeBtn.title = night ? "Day mode" : "Night mode";
   }
+  var lights = byId("lights");
+  var calm = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var pulling = false;
+  function flip() {
+    var to = isNight() ? "light" : "dark";
+    html.setAttribute("data-theme", to);
+    try { localStorage.setItem("mode", to); } catch (e) {}
+    labelMode();
+    return to;
+  }
   if (modeBtn) {
     modeBtn.addEventListener("click", function () {
-      var to = isNight() ? "light" : "dark";
-      html.setAttribute("data-theme", to);
-      try { localStorage.setItem("mode", to); } catch (e) {}
-      labelMode();
+      if (calm) { flip(); return; }
+      if (pulling) return;
+      pulling = true;
+      // tug the cord, switch at the bottom of the pull, then let the light flicker
+      modeBtn.classList.add("pulling");
+      window.setTimeout(function () {
+        var to = flip();
+        if (lights) {
+          lights.className = "lights";
+          void lights.offsetWidth;   // restart the animation
+          lights.className = "lights " + (to === "dark" ? "going-dark" : "going-light");
+        }
+      }, 230);
+      window.setTimeout(function () { modeBtn.classList.remove("pulling"); pulling = false; }, 750);
     });
   }
   try {
@@ -387,6 +409,41 @@
     if (savedMode === "light" || savedMode === "dark") html.setAttribute("data-theme", savedMode);
   } catch (e) {}
   labelMode();
+
+  // ---------- the first name: scribbles on hover, swaps between Ian and Hian Hoe ----------
+  var first = byId("first-name");
+  if (first) {
+    var NAMES = ["Ian", "Hian Hoe"];
+    var showing = 0, cameFrom = 0;
+    var setName = function (i) { showing = i; first.textContent = NAMES[i]; };
+    var inside = false;
+    var enter = function () {
+      if (inside) return;
+      inside = true;
+      cameFrom = showing;
+      // hold the width so the name doesn't slip out from under the pointer when it changes
+      first.style.minWidth = first.getBoundingClientRect().width + "px";
+      if (showing === 1) setName(0);        // hovering "Hian Hoe" brings back "Ian"
+      first.classList.add("scribbling");
+    };
+    var leave = function () {
+      if (!inside) return;
+      inside = false;
+      first.classList.remove("scribbling");
+      first.style.minWidth = "";
+      if (cameFrom === 0) setName(1);       // done hovering "Ian": it becomes "Hian Hoe"
+    };
+    first.addEventListener("mouseenter", enter);
+    first.addEventListener("mouseleave", leave);
+    first.addEventListener("focus", enter);
+    first.addEventListener("blur", leave);
+    // touch screens have no hover: a tap scribbles briefly, then swaps
+    first.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      first.classList.add("scribbling");
+      window.setTimeout(function () { first.classList.remove("scribbling"); setName(showing === 0 ? 1 : 0); }, 600);
+    }, { passive: false });
+  }
 
   // ---------- page switching ----------
   var views = Array.prototype.slice.call(document.querySelectorAll("[data-view]"));

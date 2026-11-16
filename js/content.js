@@ -28,7 +28,7 @@ window.SITE = {
     "At UC Berkeley, studying Computer Science and Applied Mathematics.",
     { text: "Studying LLM reasoning in poker.", sticker: "cards" },
     "Machine Learning Engineer at the Student Association for Applied Statistics.",
-    "Tearing fingers at bouldering."
+    { text: "Tearing fingers at bouldering.", sticker: "boulder" }
   ],
 
   // The home page screen types out a screenplay title page, then a scene.
