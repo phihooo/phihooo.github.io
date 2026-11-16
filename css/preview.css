@@ -1,0 +1,65 @@
+/* Margin options, for comparing. Only the chosen ones will move into site.css. */
+
+/* 1. scene numbers */
+.scene-no { display: none; }
+@media (min-width: 1280px) {
+  .m-scenes .scene-host { position: relative; }
+  .m-scenes .scene-no { display: block; position: absolute; top: 0; font-family: var(--type); font-weight: 700; font-size: 17px; line-height: inherit; color: var(--mist); text-transform: none; clip-path: none; }
+  .m-scenes .scene-no.l { left: -78px; }
+  .m-scenes .scene-no.r { right: -78px; }
+  .m-scenes .page-title.slug { animation: none; }
+}
+
+/* 2. binder tabs */
+.tabs { display: none; }
+@media (min-width: 1280px) {
+  .m-tabs .tabs { display: grid; gap: 10px; position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 20; }
+  .tabs a { display: block; width: 132px; padding: 9px 14px 9px 16px; font-family: var(--type); font-weight: 700; font-size: 14px; text-decoration: none; color: #fff; border-radius: 10px 0 0 10px; box-shadow: -3px 3px 8px rgba(0,0,0,.18); transform: translateX(34px); transition: transform .2s ease; }
+  .tabs a:hover, .tabs a[aria-current="page"] { transform: translateX(0); }
+  .tabs a:nth-child(1) { background: #171717; } .tabs a:nth-child(2) { background: #b3261e; }
+  .tabs a:nth-child(3) { background: #c98a12; } .tabs a:nth-child(4) { background: #2a4fa3; } .tabs a:nth-child(5) { background: #2f6b3a; }
+}
+
+/* 3. red-pencil margin notes */
+.mnote { display: none; }
+@media (min-width: 1280px) {
+  .m-notes .mnote-host { position: relative; }
+  .m-notes .mnote { display: block; position: absolute; width: 150px; font-family: "Caveat", "Segoe Print", cursive; font-weight: 700; font-size: 23px; line-height: 1.05; color: var(--red); }
+  .m-notes .mnote.l { left: -178px; text-align: right; transform: rotate(-5deg); }
+  .m-notes .mnote.r { right: -178px; transform: rotate(4deg); }
+}
+
+/* 4. film strip */
+.strip { display: none; }
+@media (min-width: 1280px) {
+  .m-strip .strip { display: block; position: fixed; right: 30px; top: 0; bottom: 0; width: 86px; z-index: 4; overflow: hidden; background: #171717;
+    box-shadow: 0 0 12px rgba(0,0,0,.25); }
+  .strip::before, .strip::after { content: ""; position: absolute; top: -40px; bottom: -40px; width: 9px; z-index: 2;
+    background: repeating-linear-gradient(180deg, #fbfbf8 0 9px, transparent 9px 20px); border-radius: 2px; }
+  .strip::before { left: 5px; } .strip::after { right: 5px; }
+  .strip-reel { position: absolute; left: 19px; right: 19px; top: 0; display: grid; gap: 8px; will-change: transform; }
+  .strip-frame { height: 62px; background: #f4f1ea; border-radius: 3px; display: grid; place-items: center; }
+  .strip-frame svg { width: 40px; height: 40px; }
+  .m-strip .tabs { right: 126px; }
+}
+
+/* 5. page number and continued */
+.pageno, .contd { display: none; }
+@media (min-width: 1280px) {
+  .m-pages .pageno { display: block; position: fixed; top: 84px; right: 44px; z-index: 6; font-family: var(--type); font-weight: 700; font-size: 18px; color: var(--ink); }
+  .m-pages .contd { display: block; position: fixed; bottom: 70px; right: 44px; z-index: 6; font-family: var(--type); font-size: 14px; color: var(--mist); }
+  .m-pages.m-strip .pageno, .m-pages.m-strip .contd { right: 140px; }
+}
+
+/* 6. wider page */
+@media (min-width: 1280px) { .m-wide .wrap, .m-wide .nav { max-width: 1320px; } }
+
+/* the chooser */
+.chooser { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 50; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; max-width: calc(100% - 20px);
+  background: #171717; color: #fff; border-radius: 14px; padding: 8px 10px; font-family: var(--type); font-size: 13px; box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+.chooser b { margin: 0 6px 0 4px; }
+.chooser button { font: inherit; color: #fff; background: transparent; border: 1px solid #5a5a5a; border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.chooser button[aria-pressed="true"] { background: #fdb515; border-color: #fdb515; color: #171717; font-weight: 700; }
+.chooser .warn { display: none; width: 100%; text-align: center; color: #ffb3a8; }
+@media (max-width: 1279px) { .chooser .warn { display: block; } }
+.foot { padding-bottom: 110px; }

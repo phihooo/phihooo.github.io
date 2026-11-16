@@ -90,6 +90,7 @@
     chicken: '<path d="M10 22 L4 16 L8 28" fill="#fff"/><ellipse cx="21" cy="28" rx="13" ry="10.500" fill="#fff"/><circle cx="33" cy="15" r="6.500" fill="#fff"/><path d="M30 9 q1.500 -4 3.500 0 q1.500 -4 3.500 0" fill="#b3261e"/><path d="M39 14 L45 16 L39 18.500 Z" fill="#fdb515"/><circle cx="34.500" cy="14" r="1.300" fill="#171717" stroke="none"/><path d="M18 38 V44 M25 38 V44" stroke="#c98a12"/>',
     planet: '<circle cx="24" cy="24" r="11" fill="#d98b4a"/><path d="M15 20 q9 4 18 0" fill="none" stroke-width="1.300"/><ellipse cx="24" cy="24" rx="21" ry="6" transform="rotate(-20 24 24)" fill="none"/><g fill="#171717" stroke="none"><circle cx="7" cy="9" r="1.400"/><circle cx="41" cy="38" r="1.400"/><circle cx="39" cy="8" r="1"/></g>'
   };
+  window.__ART = { keys: Object.keys(MEDIA_ART), draw: function (k) { return mediaArt(k); } };
   function mediaArt(key) {
     return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + MEDIA_ART[key] + '</svg>';
   }
