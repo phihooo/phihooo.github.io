@@ -55,6 +55,18 @@ window.SITE = {
   // Example: { icon: "home", label: "from", value: "Singapore" }
   facts: [],
 
+  // Photos shown as taped polaroids down both sides of the page (wide screens).
+  // Put square-ish pictures in the img folder. Up to six show: the first
+  // three go on the left, the next three on the right.
+  photos: [
+    { src: "img/p-sunset.jpg",  cap: "sun going down on the bay" },
+    { src: "img/p-wall.jpg",    cap: "the wall" },
+    { src: "img/p-stadium.jpg", cap: "game day sky" },
+    { src: "img/p-pole.jpg",    cap: "found on a pole in the fog" },
+    { src: "img/p-koi.jpg",     cap: "koi" },
+    { src: "img/p-boats.jpg",   cap: "small boats, big wind" }
+  ],
+
   // Shown in the footer as "Last updated ...". Change it when you edit the site.
   updated: "November 2026",
 

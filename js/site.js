@@ -91,7 +91,6 @@
     chicken: '<path d="M10 22 L4 16 L8 28" fill="#fff"/><ellipse cx="21" cy="28" rx="13" ry="10.500" fill="#fff"/><circle cx="33" cy="15" r="6.500" fill="#fff"/><path d="M30 9 q1.500 -4 3.500 0 q1.500 -4 3.500 0" fill="#b3261e"/><path d="M39 14 L45 16 L39 18.500 Z" fill="#fdb515"/><circle cx="34.500" cy="14" r="1.300" fill="#171717" stroke="none"/><path d="M18 38 V44 M25 38 V44" stroke="#c98a12"/>',
     planet: '<circle cx="24" cy="24" r="11" fill="#d98b4a"/><path d="M15 20 q9 4 18 0" fill="none" stroke-width="1.300"/><ellipse cx="24" cy="24" rx="21" ry="6" transform="rotate(-20 24 24)" fill="none"/><g fill="#171717" stroke="none"><circle cx="7" cy="9" r="1.400"/><circle cx="41" cy="38" r="1.400"/><circle cx="39" cy="8" r="1"/></g>'
   };
-  window.__ART = { keys: Object.keys(MEDIA_ART), draw: function (k) { return mediaArt(k); }, stickers: STICKERS };
   function mediaArt(key) {
     return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + MEDIA_ART[key] + '</svg>';
   }
@@ -422,6 +421,32 @@
     li.appendChild(link(l.label, l.url));
     return li;
   }));
+
+  // ---------- polaroids in the side margins ----------
+  var photos = (S.photos || []).slice(0, 6);
+  if (photos.length) {
+    var sides = [el("div", "mg l"), el("div", "mg r")];
+    var half = Math.ceil(photos.length / 2);
+    var TILT = [-6, 5, -4, 6, -5, 4], DRIFT = [0.05, 0.11, 0.07, 0.09, 0.05, 0.12];
+    photos.forEach(function (ph, i) {
+      var col = i < half ? 0 : 1, row = i < half ? i : i - half, rows = col === 0 ? half : photos.length - half;
+      var wrap = el("div", "pol"), frame = el("div", "pframe"), img = el("img");
+      img.src = ph.src; img.alt = ph.cap || ""; img.loading = "lazy";
+      frame.appendChild(img);
+      if (ph.cap) frame.appendChild(el("p", "", ph.cap));
+      frame.style.setProperty("--r", TILT[i] + "deg");
+      frame.style.animationDelay = (i * 0.7) + "s";
+      wrap.style.top = (14 + row * (62 / Math.max(1, rows - 1 || 1))) + "%";
+      wrap.style.setProperty("--k", DRIFT[i]);
+      wrap.appendChild(frame);
+      sides[col].appendChild(wrap);
+    });
+    sides.forEach(function (d) { document.body.appendChild(d); });
+    // they drift a little as the page scrolls
+    window.addEventListener("scroll", function () {
+      if (!motionOff()) document.body.style.setProperty("--sy", String(Math.round(window.scrollY)));
+    }, { passive: true });
+  }
 
   // ---------- motion on and off ----------
   var motionBtn = byId("motion");
