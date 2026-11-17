@@ -431,9 +431,10 @@
     photos.forEach(function (ph, i) {
       var col = i < half ? 0 : 1, row = i < half ? i : i - half, rows = col === 0 ? half : photos.length - half;
       var wrap = el("div", "pol"), frame = el("div", "pframe"), img = el("img");
-      img.src = ph.src; img.alt = ph.cap || ""; img.loading = "lazy";
+      img.src = ph.src; img.alt = ph.alt || ph.cap || ""; img.loading = "lazy";
       frame.appendChild(img);
       if (ph.cap) frame.appendChild(el("p", "", ph.cap));
+      else frame.classList.add("bare");
       frame.style.setProperty("--r", TILT[i] + "deg");
       frame.style.animationDelay = (i * 0.7) + "s";
       wrap.style.top = (14 + row * (62 / Math.max(1, rows - 1 || 1))) + "%";

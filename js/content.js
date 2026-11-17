@@ -56,15 +56,17 @@ window.SITE = {
   facts: [],
 
   // Photos shown as taped polaroids down both sides of the page (wide screens).
+  // alt describes the picture for people who can't see it; it isn't shown.
+  // Add cap: "..." to a photo if you ever want a handwritten caption under it.
   // Put square-ish pictures in the img folder. Up to six show: the first
   // three go on the left, the next three on the right.
   photos: [
-    { src: "img/p-sunset.jpg",  cap: "sun going down on the bay" },
-    { src: "img/p-wall.jpg",    cap: "the wall" },
-    { src: "img/p-stadium.jpg", cap: "game day sky" },
-    { src: "img/p-pole.jpg",    cap: "found on a pole in the fog" },
-    { src: "img/p-koi.jpg",     cap: "koi" },
-    { src: "img/p-boats.jpg",   cap: "small boats, big wind" }
+    { src: "img/p-sunset.jpg",  alt: "sun going down on the bay" },
+    { src: "img/p-wall.jpg",    alt: "the wall" },
+    { src: "img/p-stadium.jpg", alt: "game day sky" },
+    { src: "img/p-pole.jpg",    alt: "found on a pole in the fog" },
+    { src: "img/p-koi.jpg",     alt: "koi" },
+    { src: "img/p-boats.jpg",   alt: "small boats, big wind" }
   ],
 
   // Shown in the footer as "Last updated ...". Change it when you edit the site.

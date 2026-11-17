@@ -531,3 +531,4 @@ button { font: inherit; }
   .pframe { animation: pol-sway 5s ease-in-out infinite alternate; }
   @keyframes pol-sway { from { transform: rotate(var(--r, 0deg)); } to { transform: rotate(calc(var(--r, 0deg) + 3deg)) translateY(-5px); } }
 }
+@media (min-width: 1360px) { .pframe.bare { padding-bottom: 30px; } }
